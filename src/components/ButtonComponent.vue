@@ -1,11 +1,9 @@
 <template>
-  <button @click="navigate(link)" :style="backgroundColor">{{ msg }}</button>
+  <button :style="backgroundColor">{{ msg }}</button>
 </template>
 
 <script setup>
 import { defineProps } from 'vue'
-import { useRouter } from 'vue-router'
-const router = useRouter()
 
 defineProps({
   msg: {
@@ -17,14 +15,10 @@ defineProps({
     required: true
   },
   link: {
-    type: String,
-    required: true
+    type: String
   }
 })
 
-const navigate = (link) => {
-  router.push(link)
-}
 
 </script>
 

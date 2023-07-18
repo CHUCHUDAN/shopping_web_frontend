@@ -3,14 +3,16 @@
     <label class="form-label" :for="labelFor">{{ labelText }}</label>
     <span class="form-text">{{ spanText }}</span>
     <input class="form-input" :type="inputType" :id="labelFor" :name="labelFor" :placeholder="inputPlaceholder"
-      :minlength="minLength" :maxlength="maxLength" :pattern="inputPattern" :required="inputRequired">
-    <!-- <div class="invalid-text">此項目為必填，請填寫正確信箱格式，字數限制3-50</div>
-          <div class="valid-text">&#x2713</div> -->
+      :minlength="minLength" :maxlength="maxLength" :pattern="inputPattern" :required="inputRequired" :value="modelValue"
+      @input="$emit('update:modelValue', $event.target.value)">
+    <div class="invalid-text">{{ invalidText }}</div>
+    <div class="valid-text">{{ '&#10003;' }}</div>
   </div>
 </template>
 
 <script setup>
 import { defineProps } from 'vue'
+
 
 defineProps({
   labelFor: {
@@ -42,14 +44,18 @@ defineProps({
     required: true
   },
   inputPattern: {
+    type: String
+  },
+  inputRequired: {
+    type: String
+  },
+  invalidText: {
     type: String,
     required: true
   },
-  inputRequired: {
-    type: Boolean,
-    required: true
-  }
+  modelValue: {}
 })
+
 
 </script>
 
@@ -77,5 +83,35 @@ defineProps({
 .form-input,
 .form-text {
   margin: 0;
+}
+
+.valid-text,
+.invalid-text {
+  display: none;
+  font-size: 10px;
+  padding: 5px;
+}
+
+/* 驗證樣式 */
+
+.valid-text {
+  color: green;
+}
+
+.invalid-text {
+  color: red;
+}
+
+form.was-validated .form-input:invalid {
+  border-bottom: 2px solid red;
+}
+
+form.was-validated .form-input:valid {
+  border-bottom: 2px solid green;
+}
+
+form.was-validated .form-input:invalid~.invalid-text,
+form.was-validated .form-input:valid~.valid-text {
+  display: initial;
 }
 </style>

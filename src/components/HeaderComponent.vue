@@ -3,9 +3,9 @@
     <div class="title-wrapper">
       <a class="title" href="/">我的電商網站</a>
     </div>
-    <div class="user-login-wrapper">
-      <ButtonComponent msg="login" link="/login" backgroundColor="background-color:#FFBD9D"></ButtonComponent>
-    </div>
+    <router-link to="/user/login" class="user-login-wrapper">
+        <ButtonComponent msg="login" backgroundColor="background-color:#FFBD9D"></ButtonComponent>
+    </router-link>
   </header>
 </template>
 
