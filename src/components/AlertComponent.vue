@@ -1,21 +1,23 @@
 <template>
   <div v-if="successMessage" class="alert-wrapper">
     <div class="alert-message success-color">
-      {{ successMessage }}
-      <button type="button" class="close-button success-color" @click="removeMessage">X</button>
+      <div class="text">{{ successMessage }}</div>
+      <button type="button" class="close-button success-color" @click="removeMessage(true)">X</button>
     </div>
   </div>
   <div v-if="errMessage" class="alert-wrapper">
     <div class="alert-message error-color">
-      {{ errMessage }}
-      <button type="button" class="close-button error-color" @click="removeMessage">X</button>
+      <div class="text">{{ errMessage }}</div>
+      <button type="button" class="close-button error-color" @click="removeMessage(false)">X</button>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, defineProps } from 'vue'
+import { defineProps, defineEmits } from 'vue'
 
+
+const emit = defineEmits(['close-message'])
 defineProps({
   errMessage: {
     type: String
@@ -25,10 +27,9 @@ defineProps({
   }
 })
 
-const removeMessage = ref((e) => {
-  const targetElement = e.target.parentNode.parentNode
-  targetElement.remove()
-})
+const removeMessage = (state) => {
+  emit('close-message', state, '')
+}
 
 </script>
 
@@ -36,34 +37,37 @@ const removeMessage = ref((e) => {
 /* messages */
 
 .alert-wrapper {
-  width: 100%;
+
   display: flex;
   justify-content: center;
   margin: 10px;
+
 }
 
 .alert-message {
-  width: 80%;
-  height: 40px;
+  width: 350px;
+  height: 100%;
   border-radius: 5px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 5px 5px;
+  display: grid;
+  place-items: center;
+  grid-template-columns: 3fr 1fr;
+  grid-template-rows: 1fr;
+  padding: 10px;
   -webkit-box-shadow: 0px 1px 3px 0px #D0D0D0;
   -moz-box-shadow: 0px 1px 3px 0px #D0D0D0;
   box-shadow: 0px 1px 3px 0px #D0D0D0;
   letter-spacing: 1.5px;
-  position: relative;
   font-size: 1rem;
 }
 
 .close-button {
-  position: absolute;
+  width: 50px;
+  height: 70px;
   right: 5px;
   border: none;
   padding: 0;
   cursor: pointer;
+  font-size: 20px;
 }
 
 .alert-message:hover {
@@ -81,7 +85,7 @@ const removeMessage = ref((e) => {
 
 
 .error-color {
-  background-color: #FFC0C7;
+  background-color: #f8d7da;
   color: black;
 }
 

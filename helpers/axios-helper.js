@@ -1,16 +1,27 @@
 import axios from 'axios'
 
-const shopAPI = axios.create({
-  baseURL: import.meta.env.VITE_APP_API,
-  headers: {
-    "Content-Type": "application/json; charset=utf-8",
-    Accept: "application/json",
-  }
-})
+const shopAPI = (token) => {
+  return axios.create({
+    baseURL: import.meta.env.VITE_APP_API,
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`
+    }
+  })
+}
 
-async function POST (url, params) {
+async function POST (url, params, token) {
   try {
-    const res = await shopAPI.post(url, params)
+    const res = await shopAPI(token).post(url, params)
+    return res
+  } catch (err) {
+    return err.response
+  }
+}
+
+async function GET(url, params, token ) {
+  try {
+    const res = await shopAPI(token).get(url, params)
     return res
   } catch (err) {
     return err.response
@@ -18,5 +29,6 @@ async function POST (url, params) {
 }
 
 export default  {
-  POST
+  POST,
+  GET
 }

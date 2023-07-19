@@ -1,9 +1,10 @@
 <template>
+  <HeaderComponent @logout-text="changeAlert"></HeaderComponent>
   <div class="wrapper">
     <div class="form-wrapper">
       <div class="form-title">
         <h3>login</h3>
-        <AlertComponent :errMessage="errMessage" :successMessage="successMessage"></AlertComponent>
+        <AlertComponent :errMessage="errMessage" :successMessage="successMessage" @close-message="changeAlert"></AlertComponent>
       </div>
       <form @submit.prevent="login" :class="formClass" novalidate>
         <FormComponent v-model="account" label-for="account" label-text="帳號" span-text="※注意請填寫3-50字的帳號"
@@ -19,15 +20,18 @@
       </form>
     </div>
   </div>
+  <FooterComponent></FooterComponent>
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import axiosHelper from '../../helpers/axios-helper'
 import { useRouter } from 'vue-router'
 import ButtonComponent from '../components/ButtonComponent.vue'
 import FormComponent from '../components/FormComponent.vue'
 import AlertComponent from '../components/AlertComponent.vue'
+import HeaderComponent from '../components/HeaderComponent.vue'
+import FooterComponent from '../components/FooterComponent.vue'
 const router = useRouter()
 
 {
@@ -51,10 +55,12 @@ const errMessage = ref('')
 const successMessage = ref('')
 
 const login = async (e) => {
+
   const form = e.target
 
   // 表單驗證不過
   if (!form.checkValidity()) return e.preventDefault()
+
 
   const res = await axiosHelper.POST('/api/v1/users/signin', {
     account: account.value,
@@ -66,10 +72,29 @@ const login = async (e) => {
   if (!success) return errMessage.value = message
 
   // 將token跟到期日放進cookie
+
   document.cookie = `hexToken=${data.token};expires=${new Date(data.expired)};`
   successMessage.value = '登入成功'
   router.push('/')
 } 
+
+onMounted(async () => {
+
+  // 如果已登入就導回首頁
+
+  const token = document.cookie.replace(/(?:(?:^|.*;\s*)hexToken\s*=\s*([^;]*).*$)|^.*$/, '$1')
+
+  if (token) router.push('/')
+
+})
+
+// 切換警示內容
+const changeAlert = (state, text) => {
+  
+  if (!state) return errMessage.value = text
+  return successMessage.value = text
+}
+
 </script>
 
 <style scoped>
