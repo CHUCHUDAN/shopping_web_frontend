@@ -1,10 +1,10 @@
 <template>
-  <HeaderComponent @logout-text="changeAlert"></HeaderComponent>
+  <HeaderComponent></HeaderComponent>
   <div class="wrapper">
     <div class="form-wrapper">
       <div class="form-title">
         <h3>login</h3>
-        <AlertComponent :errMessage="errMessage" :successMessage="successMessage" @close-message="changeAlert"></AlertComponent>
+        <AlertComponent></AlertComponent>
       </div>
       <form @submit.prevent="login" :class="formClass" novalidate>
         <FormComponent v-model="account" label-for="account" label-text="帳號" span-text="※注意請填寫3-50字的帳號"
@@ -26,19 +26,28 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import axiosHelper from '../../helpers/axios-helper'
+import tokenHelpers from '../../helpers/token-helpers'
 import { useRouter } from 'vue-router'
+import { useMessageStore } from '../stores/message'
 import ButtonComponent from '../components/ButtonComponent.vue'
 import FormComponent from '../components/FormComponent.vue'
 import AlertComponent from '../components/AlertComponent.vue'
 import HeaderComponent from '../components/HeaderComponent.vue'
 import FooterComponent from '../components/FooterComponent.vue'
 const router = useRouter()
+const storeMessage = useMessageStore()
 
 {
   ButtonComponent
   FormComponent
   AlertComponent
+  HeaderComponent
+  FooterComponent
 }
+
+// message初始化
+storeMessage.clearErrorMessages()
+
 
 
 // 表單樣式
@@ -51,8 +60,6 @@ const addFormClass = () => {
 // 登入功能
 const account = ref('')
 const password = ref('')
-const errMessage = ref('')
-const successMessage = ref('')
 
 const login = async (e) => {
 
@@ -69,31 +76,29 @@ const login = async (e) => {
   const { data, success, message } = res.data
 
   // 登入失敗
-  if (!success) return errMessage.value = message
+  if (!success) {
+    return storeMessage.setError(message)
+  } 
+  localStorage.setItem("token", data.token);
+  storeMessage.setSuccess('登入成功')
 
-  // 將token跟到期日放進cookie
-
-  document.cookie = `hexToken=${data.token};expires=${new Date(data.expired)};`
-  successMessage.value = '登入成功'
   router.push('/')
 } 
 
 onMounted(async () => {
 
   // 如果已登入就導回首頁
+  // 將token放進header中發送驗證
 
-  const token = document.cookie.replace(/(?:(?:^|.*;\s*)hexToken\s*=\s*([^;]*).*$)|^.*$/, '$1')
+  const res = await tokenHelpers.tokenCheck()
+  const { success } = res.data
 
-  if (token) router.push('/')
+    // api成功
+  if (success) return router.push('/')
+
 
 })
 
-// 切換警示內容
-const changeAlert = (state, text) => {
-  
-  if (!state) return errMessage.value = text
-  return successMessage.value = text
-}
 
 </script>
 

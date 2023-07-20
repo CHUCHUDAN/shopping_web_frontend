@@ -28,7 +28,27 @@ async function GET(url, params, token ) {
   }
 }
 
+async function PATCH(url, params, token) {
+  try {
+    const res = await shopAPI(token).patch(url, params)
+    return res
+  } catch (err) {
+    return err.response
+  }
+}
+
+async function DELETE(url, params, token) {
+  try {
+    const res = await shopAPI(token).delete(url, params)
+    return res
+  } catch (err) {
+    return err.response
+  }
+}
+
 export default  {
   POST,
-  GET
+  GET,
+  PATCH,
+  DELETE
 }

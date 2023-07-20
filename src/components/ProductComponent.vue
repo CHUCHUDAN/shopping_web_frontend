@@ -1,41 +1,47 @@
 <template>
-  <div class="product-wrapper" v-for="(item) in products" v-bind:key="item.id">
+  <div class="product-wrapper" v-for="(item) in storeProduct.products" v-bind:key="item.id">
     <div class="product-img" :style="`background-image: url('${item.avatar}')`"></div>
     <div class="product-text">
       <div class="product-name">{{ item.name }}</div>
       <div class="product-text">{{ item.description }}</div>
     </div>
     <div class="product-price">
-      <div class="product-price"> $ {{ item.price }}</div>
-      <ButtonComponent msg="加入購物車" backgroundColor="background-color:#FF9797" @click="addToShopcar(item.id)">
+      <div class="price"> $ {{ item.price }}</div>
+      <ButtonComponent v-if="storeLogin.buttonOn" msg="加入購物車" backgroundColor="background-color:#FF9797" @click="addToShopcar(item.id)">
       </ButtonComponent>
     </div>
   </div>
 </template>
 
 <script setup>
-import { defineProps, defineEmits } from 'vue'
+import { useLoginStore } from '../stores/login'
+import { productStore } from '../stores/product'
+import { useMessageStore } from '../stores/message'
 import axiosHelper from '../../helpers/axios-helper'
 import tokenHelpers from '../../helpers/token-helpers'
 import ButtonComponent from './ButtonComponent.vue'
-
+const storeLogin = useLoginStore()
+const storeProduct = productStore()
+const storeMessage = useMessageStore()
 {
   ButtonComponent
 }
 
-const emit = defineEmits(['add-to-shopcar'])
-defineProps({
-  products: {}
-})
 
 // 加入購物車api
 
 const addToShopcar = async (productId) => {
 
+  window.scrollTo({ top: 0, behavior: 'smooth' })
   const token = tokenHelpers.putTokenToHeader()
   const res = await axiosHelper.POST(`/api/v1/shopcars/${productId}`, undefined, token)
   const { success, message } = res.data
-  return emit('add-to-shopcar', success, message)
+
+  // api失敗
+  if (!success) return storeMessage.setError(message)
+
+  // api成功
+  return storeMessage.setSuccess(message)
 
 }
 
@@ -70,8 +76,12 @@ const addToShopcar = async (productId) => {
 }
 
 .product-price {
-  display: flex;
-  justify-content: space-around;
+  display: grid;
+  grid-template-columns: 0.5fr 1fr;
+  grid-template-rows: 1fr;
+  grid-gap: 10px;
   align-items: center;
+  padding: 10px;
 }
+
 </style>

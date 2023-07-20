@@ -5,6 +5,7 @@
 <script setup>
 import { defineProps } from 'vue'
 
+
 defineProps({
   msg: {
     type: String,
@@ -33,6 +34,7 @@ button {
   margin: 4px 2px;
   cursor: pointer;
   transition: background-color ease-in-out 0.3s;
+  font-weight: 500;
 }
 button:hover {
   /* 陰影 */

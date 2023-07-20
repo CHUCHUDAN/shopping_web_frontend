@@ -1,35 +1,23 @@
 <template>
-  <div v-if="successMessage" class="alert-wrapper">
+  <div v-if="storeMessage.successMessage" class="alert-wrapper">
     <div class="alert-message success-color">
-      <div class="text">{{ successMessage }}</div>
-      <button type="button" class="close-button success-color" @click="removeMessage(true)">X</button>
+      <div class="text">{{ storeMessage.successMessage }}</div>
+      <button type="button" class="close-button success-color" @click="storeMessage.clearSuccessMessages">X</button>
     </div>
   </div>
-  <div v-if="errMessage" class="alert-wrapper">
+  <div v-if="storeMessage.errMessage" class="alert-wrapper">
     <div class="alert-message error-color">
-      <div class="text">{{ errMessage }}</div>
-      <button type="button" class="close-button error-color" @click="removeMessage(false)">X</button>
+      <div class="text">{{ storeMessage.errMessage }}</div>
+      <button type="button" class="close-button error-color" @click="storeMessage.clearErrorMessages">X</button>
     </div>
   </div>
 </template>
 
 <script setup>
-import { defineProps, defineEmits } from 'vue'
+import { useMessageStore } from '../stores/message'
+const storeMessage = useMessageStore()
 
 
-const emit = defineEmits(['close-message'])
-defineProps({
-  errMessage: {
-    type: String
-  },
-  successMessage: {
-    type: String
-  }
-})
-
-const removeMessage = (state) => {
-  emit('close-message', state, '')
-}
 
 </script>
 

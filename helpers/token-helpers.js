@@ -4,7 +4,7 @@ import axiosHelper from './axios-helper'
 // 將token放進header
 
 const putTokenToHeader = () => {
-  const token = document.cookie.replace(/(?:(?:^|.*;\s*)hexToken\s*=\s*([^;]*).*$)|^.*$/, '$1')
+  const token = localStorage.getItem("token")
   axios.defaults.headers.common.Authorization = `Bearer ${token}`
   return token
 }

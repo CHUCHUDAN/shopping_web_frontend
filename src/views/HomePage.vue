@@ -1,8 +1,7 @@
 <template>
-  <HeaderComponent ></HeaderComponent>
+  <HeaderComponent></HeaderComponent>
   <div class="home-wrapper">
-    <AlertComponent :successMessage="successMessage" :errMessage="errMessage" @close-message="changeAlert">
-    </AlertComponent>
+    <AlertComponent></AlertComponent>
     <div class="search-wrapper">
       <form action="" class="form-wrapper">
         <div class="form-item">
@@ -28,7 +27,7 @@
       </form>
     </div>
     <div class="products-wrapper">
-      <ProductComponent :products="products" @add-to-shopcar="changeAlert"></ProductComponent>
+      <ProductComponent ></ProductComponent>
     </div>
   </div>
  <FooterComponent></FooterComponent>
@@ -38,23 +37,30 @@
 import { ref, onMounted } from 'vue'
 import axiosHelper from '../../helpers/axios-helper'
 import tokenHelpers from '../../helpers/token-helpers'
+import { useMessageStore } from '../stores/message'
+import { productStore } from '../stores/product'
 import AlertComponent from '../components/AlertComponent.vue'
 import ProductComponent from '../components/ProductComponent.vue'
 import FormComponent from '../components/FormComponent.vue'
 import ButtonComponent from '../components/ButtonComponent.vue'
 import HeaderComponent from '../components/HeaderComponent.vue'
 import FooterComponent from '../components/FooterComponent.vue'
+const storeMessage = useMessageStore()
+const storeProduct = productStore()
 
 {
   AlertComponent
   ProductComponent
   FormComponent
   ButtonComponent
+  HeaderComponent
+  FooterComponent
 }
 
-const successMessage = ref('')
-const errMessage = ref('')
-const products = ref('')
+
+// message初始化
+storeMessage.clearErrorMessages()
+storeMessage.clearSuccessMessages()
 
 
 onMounted(async () => {
@@ -65,9 +71,9 @@ onMounted(async () => {
   const { success } = res.data
 
   // api失敗
-  if (!success) return errMessage.value = '未登入'
+  if (!success) return storeMessage.setError('未登入')
   // api成功
-  return successMessage.value = '登入成功'
+  return storeMessage.setSuccess('登入成功')
 
 })
 
@@ -80,16 +86,11 @@ onMounted(async () => {
   const { success, message } = res.data
 
   // api失敗
-  if (!success) return errMessage.value = message
+  if (!success) return storeMessage.setError(message)
   // api成功
-  return products.value = res.data.data.products
+  return storeProduct.setProduct(res.data.data.products)
 })
 
-// 切換警示內容
-const changeAlert = (state, text) => {
-  if (!state) return errMessage.value = text
-  return successMessage.value = text
-}
 
 // 搜尋、篩選商品
 
@@ -112,10 +113,11 @@ const searchProduct = async () => {
   })
   const { success, message } = res.data
   // api失敗
-  if (!success) return errMessage.value = message
+  if (!success) return storeMessage.setError(message)
   // api成功
-  products.value = res.data.data.products
+  return storeProduct.setProduct(res.data.data.products)
 }
+
 
 </script>
 

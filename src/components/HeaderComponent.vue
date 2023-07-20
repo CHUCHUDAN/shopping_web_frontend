@@ -4,10 +4,10 @@
       <a class="title" href="/">我的電商網站</a>
     </div>
     <div class="func-wrapper">
-      <div v-if="isBuyer" class="shopcarPic">
+      <a href="/shopcars" v-if="storeLogin.isBuyer" class="shopcarPic">
         <i class="fa-solid fa-cart-shopping"></i>
-      </div>
-      <div v-if="isSeller" class="storePic">
+      </a>
+      <div v-if="storeLogin.isSeller" class="storePic">
         <i class="fa-solid fa-store"></i>
       </div>
       <router-link to="/user/login" class="user-login-wrapper" @click="clickHandler()">
@@ -18,20 +18,24 @@
 </template>
 
 <script setup>
-import { onMounted, ref, defineEmits } from 'vue'
-import Cookies from 'js-cookie'
+import { onMounted, ref } from 'vue'
+import { useRouter } from 'vue-router'
+import { useLoginStore } from '../stores/login'
+import { useMessageStore } from '../stores/message'
 import tokenHelpers from '../../helpers/token-helpers'
 import axiosHelper from '../../helpers/axios-helper'
 import ButtonComponent from './ButtonComponent.vue'
+const router = useRouter()
+const storeLogin = useLoginStore()
+const storeMessage = useMessageStore()
+
 
 {
   ButtonComponent
 }
 
-const emit = defineEmits(['logout-text'])
 const msg = ref('')
-const isBuyer = ref('')
-const isSeller = ref('')
+
 
 onMounted(async () => {
 
@@ -43,27 +47,36 @@ onMounted(async () => {
 
   // api失敗
   if (!success) {
-    isBuyer.value = false
+    storeLogin.setisBuyer(false)
+    storeLogin.setisSeller(false)
+    storeLogin.setButtonOn(false)
     msg.value = 'login'
-  }
+  } 
+
   // api成功
   if (success && user.role === 'buyer') {
     // 買家
 
-    isBuyer.value = true
+    storeLogin.setisBuyer(true)
+    storeLogin.setisSeller(false)
+    storeLogin.setButtonOn(true)
     msg.value = 'logout'
+
   } else if (success && user.role === 'seller') {
     // 賣家
 
-    isSeller.value = true
+    storeLogin.setisSeller(true)
+    storeLogin.setisBuyer(false)
+    storeLogin.setButtonOn(false)
     msg.value = 'logout'
   }
 })
 
 const clickHandler = () => {
   if (msg.value === 'logout') {
-    Cookies.remove('hexToken')
-    emit('logout-text', true, '登出成功')
+    storeMessage.setSuccess('登出成功')
+    localStorage.removeItem("token")
+    router.push('/user/login')
   }
 }
 
