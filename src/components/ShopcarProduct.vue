@@ -1,16 +1,16 @@
 <template>
   <div class="product-wrapper"  v-for="(item) in storeProduct.products" v-bind:key="item.id">
     <div class="data-wrapper">
-      <div class="product-pic" :style="`background-image: url('${item.Product.avatar}')`"></div>
+      <div class="product-pic" :style="`background-image: url('${item.Product?.avatar}')`"></div>
       <div class="product-data">
-        <div class="product-price">售價: $ {{ item.Product.price }}</div>
-        <div class="product-num">存貨量: {{ item.Product.inventory_quantity }}</div>
+        <div class="product-price">售價: $ {{ item.Product?.price }}</div>
+        <div class="product-num">存貨量: {{ item.Product?.inventory_quantity }}</div>
       </div>
     </div>
     <div class="userData-wrapper">
-      <div class="product-name">商品名稱: {{ item.Product.name }}</div>
+      <div class="product-name">商品名稱: {{ item.Product?.name }}</div>
       <div class="shopcar-num">購買數量: <span>{{ item.quantity }}</span></div>
-      <div class="shopcar-price" >累加金額: <span>$ {{ item.quantity * item.Product.price }}</span></div>
+      <div class="shopcar-price" >累加金額: <span>$ {{ item.quantity * item.Product?.price }}</span></div>
     </div>
     <div class="use-wrapper">
       <div class="control-button">
@@ -36,6 +36,7 @@ const storeMessage = useMessageStore()
 {
   ButtonComponent
 }
+
 
 
 // 刪除購物車商品api

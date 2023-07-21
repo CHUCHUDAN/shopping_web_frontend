@@ -5,9 +5,9 @@
     </AlertComponent>
     <div class="add-wrapper">
       <div class="add-button">
-        <a href="/addStore">
+        <router-link  to="/addStore">
           <ButtonComponent msg="上架商品" backgroundColor="background-color:#FFBD9D" ></ButtonComponent>
-        </a>
+        </router-link>
       </div>
     </div>
     <div class="products-wrapper" >
@@ -40,6 +40,9 @@ const storeProduct = productStore()
   StoreProduct
   ButtonComponent
 }
+
+// message初始化
+storeMessage.clearErrorMessages()
 
 onMounted(async () => {
   // 將token放進header中發送驗證

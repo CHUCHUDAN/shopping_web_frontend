@@ -58,6 +58,7 @@ const storeForm = useFormStore()
 
 // message初始化
 storeMessage.clearErrorMessages()
+storeMessage.clearSuccessMessages()
 
 // 表單樣式
 const formClass = ref('')

@@ -42,6 +42,10 @@ const storeProduct = productStore()
   ButtonComponent
 }
 
+// message初始化
+storeMessage.clearErrorMessages()
+storeMessage.clearSuccessMessages()
+
 onMounted(async () => {
   // 將token放進header中發送驗證
 

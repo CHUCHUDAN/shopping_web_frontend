@@ -1,15 +1,15 @@
 <template>
   <header>
     <div class="title-wrapper">
-      <a class="title" href="/">我的電商網站</a>
+      <router-link  to="/home" class="title" >我的電商網站</router-link>
     </div>
     <div class="func-wrapper">
-      <a href="/shopcars" v-if="storeLogin.isBuyer" class="shopcarPic">
+      <router-link  to="/shopcars" v-if="storeLogin.isBuyer" class="shopcarPic" @click="linkToShopcar()">
         <i class="fa-solid fa-cart-shopping"></i>
-      </a>
-      <a href="/stores" v-if="storeLogin.isSeller" class="storePic">
+      </router-link>  
+      <router-link  to="/stores" v-if="storeLogin.isSeller" class="storePic">
         <i class="fa-solid fa-store"></i>
-      </a>
+      </router-link>
       <router-link to="/user/login" class="user-login-wrapper" @click="clickHandler()">
         <ButtonComponent :msg="msg" backgroundColor="background-color:#FFBD9D"></ButtonComponent>
       </router-link>
@@ -80,6 +80,9 @@ const clickHandler = () => {
   }
 }
 
+const linkToShopcar = () => {
+  router.push('/shopcars')
+}
 </script>
 
 <style scoped>
