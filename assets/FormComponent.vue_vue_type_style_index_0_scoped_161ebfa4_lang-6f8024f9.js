@@ -1,0 +1,1 @@
+import{s as o}from"./index-fb88865d.js";const n=o("shop",{state:()=>({name:"",price:0,inventory:0,avatar:"",description:"",account:"",password:""}),getters:{},actions:{setChangeInput(e,t){this[e]=t}}});export{n as u};
