@@ -18,7 +18,7 @@
         <i class="fa-solid fa-circle-minus minus" @click="storeProduct.setProductQuantity('minus', item.id)"></i>
       </div>
       <div class="delete-button">
-        <i class="fa-solid fa-trash delete"  :product-id="item.product_id" @click="deleteShop(item.product_id)"></i>
+        <i class="fa-solid fa-trash delete"  product-id="item.product_id" @click="deleteShop(item.product_id)"></i>
       </div>
     </div>
   </div>
@@ -83,7 +83,6 @@ const deleteShop = async (productId) => {
 .product-pic {
   width: 100%;
   background-size: 100%;
-  background-image: url('https://attach.setn.com/newsimages/2019/03/02/1806118-XXL.jpg');
 }
 
 .product-data {

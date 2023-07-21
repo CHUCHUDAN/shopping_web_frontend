@@ -46,9 +46,31 @@ async function DELETE(url, params, token) {
   }
 }
 
+// 使用formData傳送
+
+const shopAPIFormData = (token) => {
+  return axios.create({
+    baseURL: import.meta.env.VITE_APP_API,
+    headers: {
+      'Content-Type': 'multipart/form-data',
+      'Authorization': `Bearer ${token}`
+    }
+  })
+}
+
+async function formDataPOST(url, params, token) {
+  try {
+    const res = await shopAPIFormData(token).post(url, params)
+    return res
+  } catch (err) {
+    return err.response
+  }
+}
+
 export default  {
   POST,
   GET,
   PATCH,
-  DELETE
+  DELETE,
+  formDataPOST
 }

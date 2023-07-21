@@ -3,8 +3,7 @@
     <label class="form-label" :for="labelFor">{{ labelText }}</label>
     <span class="form-text">{{ spanText }}</span>
     <input class="form-input" :type="inputType" :id="labelFor" :name="labelFor" :placeholder="inputPlaceholder"
-      :minlength="minLength" :maxlength="maxLength" :pattern="inputPattern" :required="inputRequired" :value="modelValue"
-      @input="$emit('update:modelValue', $event.target.value)">
+      :minlength="minLength" :maxlength="maxLength" :pattern="inputPattern" :required="inputRequired" @input="inputSend" >
     <div class="invalid-text">{{ invalidText }}</div>
     <div class="valid-text">{{ '&#10003;' }}</div>
   </div>
@@ -12,7 +11,8 @@
 
 <script setup>
 import { defineProps } from 'vue'
-
+import { useFormStore } from '../stores/form-store'
+const storeForm = useFormStore()
 
 defineProps({
   labelFor: {
@@ -36,12 +36,10 @@ defineProps({
     required: true
   },
   minLength: {
-    type: String,
-    required: true
+    type: String
   },
   maxLength: {
-    type: String,
-    required: true
+    type: String
   },
   inputPattern: {
     type: String
@@ -52,9 +50,14 @@ defineProps({
   invalidText: {
     type: String,
     required: true
-  },
-  modelValue: {}
+  }
 })
+
+const inputSend = (e) => {
+  const value = e.target.value
+  const propName = e.target.id
+  storeForm.setChangeInput(propName, value)
+}
 
 
 </script>

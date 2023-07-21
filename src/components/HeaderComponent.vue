@@ -7,9 +7,9 @@
       <a href="/shopcars" v-if="storeLogin.isBuyer" class="shopcarPic">
         <i class="fa-solid fa-cart-shopping"></i>
       </a>
-      <div v-if="storeLogin.isSeller" class="storePic">
+      <a href="/stores" v-if="storeLogin.isSeller" class="storePic">
         <i class="fa-solid fa-store"></i>
-      </div>
+      </a>
       <router-link to="/user/login" class="user-login-wrapper" @click="clickHandler()">
         <ButtonComponent :msg="msg" backgroundColor="background-color:#FFBD9D"></ButtonComponent>
       </router-link>
@@ -51,7 +51,7 @@ onMounted(async () => {
     storeLogin.setisSeller(false)
     storeLogin.setButtonOn(false)
     msg.value = 'login'
-  } 
+  }
 
   // api成功
   if (success && user.role === 'buyer') {
@@ -114,14 +114,16 @@ header {
   padding-right: 10px;
 }
 
-.shopcarPic, .storePic {
+.shopcarPic,
+.storePic {
   padding-right: 10px;
   font-size: 25px;
   cursor: pointer;
   color: #F0F0F0;
 }
 
-.shopcarPic:hover, .storePic:hover {
+.shopcarPic:hover,
+.storePic:hover {
   color: #5B5B5B
 }
 

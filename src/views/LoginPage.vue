@@ -29,6 +29,7 @@ import axiosHelper from '../../helpers/axios-helper'
 import tokenHelpers from '../../helpers/token-helpers'
 import { useRouter } from 'vue-router'
 import { useMessageStore } from '../stores/message'
+import { useFormStore } from '../stores/form-store'
 import ButtonComponent from '../components/ButtonComponent.vue'
 import FormComponent from '../components/FormComponent.vue'
 import AlertComponent from '../components/AlertComponent.vue'
@@ -36,6 +37,7 @@ import HeaderComponent from '../components/HeaderComponent.vue'
 import FooterComponent from '../components/FooterComponent.vue'
 const router = useRouter()
 const storeMessage = useMessageStore()
+const storeForm = useFormStore()
 
 {
   ButtonComponent
@@ -58,8 +60,6 @@ const addFormClass = () => {
 }
 
 // 登入功能
-const account = ref('')
-const password = ref('')
 
 const login = async (e) => {
 
@@ -70,8 +70,8 @@ const login = async (e) => {
 
 
   const res = await axiosHelper.POST('/api/v1/users/signin', {
-    account: account.value,
-    password: password.value
+    account: storeForm.account,
+    password: storeForm.password
   })
   const { data, success, message } = res.data
 
@@ -79,7 +79,7 @@ const login = async (e) => {
   if (!success) {
     return storeMessage.setError(message)
   } 
-  localStorage.setItem("token", data.token);
+  localStorage.setItem("token", data.token)
   storeMessage.setSuccess('登入成功')
 
   router.push('/')

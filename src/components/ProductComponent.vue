@@ -7,7 +7,8 @@
     </div>
     <div class="product-price">
       <div class="price"> $ {{ item.price }}</div>
-      <ButtonComponent v-if="storeLogin.buttonOn" msg="加入購物車" backgroundColor="background-color:#FF9797" @click="addToShopcar(item.id)">
+      <ButtonComponent v-if="storeLogin.buttonOn" msg="加入購物車" backgroundColor="background-color:#FF9797"
+        @click="addToShopcar(item.id)">
       </ButtonComponent>
     </div>
   </div>
@@ -65,7 +66,9 @@ const addToShopcar = async (productId) => {
 
 .product-img {
   width: 100%;
-  background-size: 100%;
+  background-position: center center;
+  background-size: cover;
+  background-repeat: no-repeat;
 }
 
 .product-text {
@@ -83,5 +86,4 @@ const addToShopcar = async (productId) => {
   align-items: center;
   padding: 10px;
 }
-
 </style>

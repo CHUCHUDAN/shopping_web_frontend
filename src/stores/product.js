@@ -32,6 +32,10 @@ export const productStore = defineStore('product', {
       const newProduct = this.products.filter(product => product.product_id !== productId)
       this.products = newProduct
     },
+    deleteStoreShop(productId) {
+      const newProduct = this.products.filter(product => product.id !== productId)
+      this.products = newProduct
+    },
     productCheckout() {
       this.products = []
     }

@@ -15,11 +15,30 @@ const router = createRouter({
       name: 'shopcar',
       component: () => import('../views/ShopcarPage.vue')
     },
+    // 商家頁面
+    {
+      path: '/stores',
+      name: 'store',
+      component: () => import('../views/StorePage.vue')
+    },
+    // 商家上架商品頁面
+    {
+      path: '/addStore',
+      name: 'addstore',
+      component: () => import('../views/AddStore.vue')
+    },
     // 首頁
     {
       path: '/',
       name: 'home',
       component: () => import('../views/HomePage.vue')
+    },
+    // 如果沒有配對的路由
+    {
+      path: '/:pathMatch(.*)*',
+      redirect: {
+        name: 'home'
+      }
     }
   ]
 })

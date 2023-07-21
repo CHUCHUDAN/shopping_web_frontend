@@ -12,7 +12,7 @@
         <ButtonComponent msg="更新" backgroundColor="background-color:#FFBD9D" @click="updateShopcars"></ButtonComponent>
       </div>
     </div>
-    <div class="products-wrapper" @input="getTotalAmount(storeProduct.products)" ref="productWrapper">
+    <div class="products-wrapper" >
       <ShopcarProduct></ShopcarProduct>
     </div>
   </div>
@@ -20,7 +20,7 @@
 </template>
 
 <script setup>
-import { onMounted, ref } from 'vue'
+import { onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import tokenHelpers from '../../helpers/token-helpers'
 import axiosHelper from '../../helpers/axios-helper'
@@ -34,8 +34,6 @@ import ButtonComponent from '../components/ButtonComponent.vue'
 const router = useRouter()
 const storeMessage = useMessageStore()
 const storeProduct = productStore()
-const productWrapper = ref(null)
-
 {
   AlertComponent
   HeaderComponent
