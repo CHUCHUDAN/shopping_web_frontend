@@ -1,1 +1,0 @@
-import{y as o}from"./index-ac8ec398.js";const n=o("shop",{state:()=>({name:"",price:0,inventory:0,avatar:"",description:"",account:"",password:""}),getters:{},actions:{setChangeInput(e,t){this[e]=t}}});export{n as u};

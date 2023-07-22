@@ -1,0 +1,1 @@
+import{z as o}from"./index-4e7a4945.js";const r=o("shop",{state:()=>({name:"",price:0,inventory:0,avatar:"",description:"",account:"",password:"",passwordCheck:"",role:"buyer"}),getters:{},actions:{setChangeInput(e,t){this[e]=t}}});export{r as u};
