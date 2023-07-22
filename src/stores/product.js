@@ -3,6 +3,7 @@ import { defineStore } from 'pinia'
 export const productStore = defineStore('product', {
   state: () => ({
     products: [],
+    product: {},
     totalAmount: 0
   }),
   getters: {

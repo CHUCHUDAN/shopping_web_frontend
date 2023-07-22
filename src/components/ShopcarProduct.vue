@@ -1,7 +1,7 @@
 <template>
   <div class="product-wrapper"  v-for="(item) in storeProduct.products" v-bind:key="item.id">
     <div class="data-wrapper">
-      <div class="product-pic" :style="`background-image: url('${item.Product?.avatar}')`"></div>
+      <div class="product-pic" :style="`background-image: url('${item.Product?.avatar}')`" @click="toDetailProduct(item.product_id)"></div>
       <div class="product-data">
         <div class="product-price">售價: $ {{ item.Product?.price }}</div>
         <div class="product-num">存貨量: {{ item.Product?.inventory_quantity }}</div>
@@ -30,6 +30,7 @@ import { productStore } from '../stores/product'
 import { useMessageStore } from '../stores/message'
 import axiosHelper from '../../helpers/axios-helper'
 import ButtonComponent from './ButtonComponent.vue'
+import router from '../router'
 const storeProduct = productStore()
 const storeMessage = useMessageStore()
 
@@ -42,6 +43,7 @@ const storeMessage = useMessageStore()
 // 刪除購物車商品api
 const deleteShop = async (productId) => {
 
+  window.scrollTo({ top: 0, behavior: 'smooth' })
   const token = tokenHelpers.putTokenToHeader()
   const res = await axiosHelper.DELETE(`/api/v1/shopcars/${productId}`,undefined, token)
   const { success, message } = res.data
@@ -53,6 +55,11 @@ const deleteShop = async (productId) => {
   storeProduct.deleteProducts(productId)
   storeProduct.totalAmountCount()
   return storeMessage.setSuccess(message)
+}
+
+// 跳轉至商品詳細頁
+const toDetailProduct = (product_id) => {
+  router.push(`/product/${product_id}`)
 }
 
 
@@ -84,6 +91,7 @@ const deleteShop = async (productId) => {
 .product-pic {
   width: 100%;
   background-size: 100%;
+  cursor: pointer;
 }
 
 .product-data {

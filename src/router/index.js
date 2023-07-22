@@ -27,6 +27,12 @@ const router = createRouter({
       name: 'addstore',
       component: () => import('../views/AddStore.vue')
     },
+    // 商品詳細頁
+    {
+      path: '/product/:product_id',
+      name: 'product',
+      component: () => import('../views/ProductDetailPage.vue')
+    },
     // 首頁
     {
       path: '/',

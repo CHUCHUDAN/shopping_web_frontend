@@ -36,7 +36,6 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import axiosHelper from '../../helpers/axios-helper'
-import tokenHelpers from '../../helpers/token-helpers'
 import { useMessageStore } from '../stores/message'
 import { productStore } from '../stores/product'
 import AlertComponent from '../components/AlertComponent.vue'
@@ -60,23 +59,6 @@ const storeProduct = productStore()
 
 // message初始化
 storeMessage.clearErrorMessages()
-storeMessage.clearSuccessMessages()
-
-
-onMounted(async () => {
-
-  // 將token放進header中發送驗證
-
-  const res = await tokenHelpers.tokenCheck()
-  const { success } = res.data
-
-  // api失敗
-  if (!success) return storeMessage.setError('未登入')
-  // api成功
-  return storeMessage.setSuccess('登入成功')
-
-})
-
 
 onMounted(async () => {
 
