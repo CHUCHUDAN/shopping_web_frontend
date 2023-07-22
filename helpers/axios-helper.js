@@ -67,10 +67,21 @@ async function formDataPOST(url, params, token) {
   }
 }
 
+async function formDataPUT(url, params, token) {
+  try {
+    const res = await shopAPIFormData(token).put(url, params)
+    return res
+  } catch (err) {
+    return err.response
+  }
+}
+
+
 export default  {
   POST,
   GET,
   PATCH,
   DELETE,
-  formDataPOST
+  formDataPOST,
+  formDataPUT
 }

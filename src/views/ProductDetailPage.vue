@@ -44,7 +44,7 @@ import { useMessageStore } from '../stores/message'
 const storeLogin = useLoginStore()
 const storeProduct = productStore()
 const storeMessage = useMessageStore()
-const router = useRoute()
+const route = useRoute()
 
 {
   AlertComponent
@@ -77,7 +77,7 @@ const addToShopcar = async (productId) => {
 // 顯示單一商品api
 onMounted(async () => {
 
-  const productId = router.params.product_id
+  const productId = route.params.product_id
   const res = await axiosHelper.GET(`/api/v1/products/${productId}`)
   const { data, success, message } = res.data
 
