@@ -3,20 +3,28 @@
   <div class="wrapper">
     <div class="form-wrapper">
       <div class="form-title">
-        <h3>login</h3>
+        <h3>Login</h3>
         <AlertComponent></AlertComponent>
       </div>
       <form @submit.prevent="login" :class="formClass" novalidate>
-        <FormComponent v-model="account" label-for="account" label-text="帳號" span-text="※注意請填寫3-50字的帳號"
+        <FormComponent  label-for="account" label-text="帳號" span-text="※注意請填寫3-50字的帳號"
           input-placeholder="請輸入帳號" input-type="text" min-length="3" max-length="50" inputRequired="true"
-          invalid-text="此項目為必填，字數限制3-50"></FormComponent>
-        <FormComponent v-model="password" label-for="password" label-text="密碼" span-text="※注意請填寫4-50長度的密碼"
+          invalid-text="此項目為必填，字數限制3-50">
+        </FormComponent>
+
+        <FormComponent  label-for="password" label-text="密碼" span-text="※注意請填寫4-50長度的密碼"
           input-placeholder="請輸入有效密碼" input-type="password" min-length="4" max-length="50" inputRequired="true"
-          invalid-text='此項目為必填，字數限制4-50'></FormComponent>
+          invalid-text='此項目為必填，字數限制4-50'>
+        </FormComponent>
+        
         <div>
           <ButtonComponent msg="login" backgroundColor="background-color:#FFBD9D" type="submit" @click="addFormClass">
           </ButtonComponent>
         </div>
+        <div class="login-text">
+          還沒有帳號 ?
+        <router-link to="/user/register" class="login-text-link" >註冊</router-link>
+      </div>
       </form>
     </div>
   </div>

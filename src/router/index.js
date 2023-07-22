@@ -9,6 +9,12 @@ const router = createRouter({
       name: 'login',
       component: () => import('../views/LoginPage.vue')
     },
+    // 註冊頁面
+    {
+      path: '/user/register',
+      name: 'register',
+      component: () => import('../views/RegisterPage.vue')
+    },
     // 購物車頁面
     {
       path: '/shopcars',

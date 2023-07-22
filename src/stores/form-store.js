@@ -8,7 +8,9 @@ export const useFormStore = defineStore('shop', {
     avatar: '',
     description: '',
     account: '',
-    password: ''
+    password: '',
+    passwordCheck: '',
+    role: 'buyer'
   }),
   getters: {
   },
