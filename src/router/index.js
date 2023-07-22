@@ -33,6 +33,12 @@ const router = createRouter({
       name: 'addstore',
       component: () => import('../views/AddStore.vue')
     },
+    // 商家編輯商品頁面
+    {
+      path: '/product/edit/:product_id',
+      name: 'productEdit',
+      component: () => import('../views/ProductEditPage.vue')
+    },
     // 商品詳細頁
     {
       path: '/product/:product_id',

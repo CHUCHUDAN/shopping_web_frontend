@@ -12,6 +12,7 @@
       <div class="product-description">商品描述: {{ item.description }}</div>
       <div class="delete-button">
         <i class="fa-solid fa-trash delete" product-id="item.product_id" @click="deleteShop(item.id)"></i>
+        <i class="fa-solid fa-pen edit" @click="toEditProduct(item.id)"></i>
         <span class="add-time">上架時間: {{ item.addShopTime }}</span>
       </div>
     </div>
@@ -53,6 +54,11 @@ const toDetailProduct = (product_id) => {
   router.push(`/product/${product_id}`)
 }
 
+// 跳轉置商品編輯頁
+const toEditProduct = (product_id) => {
+  router.push(`/product/edit/${product_id}`)
+}
+
 </script>
 
 <style scoped>
@@ -65,6 +71,7 @@ const toDetailProduct = (product_id) => {
   width: 800px;
   padding: 15px;
   border-radius: 10px;
+  position: relative;
   /* 陰影 */
   -webkit-box-shadow: 2px 6px 27px 6px rgba(0, 0, 0, 0.1);
   -moz-box-shadow: 2px 6px 27px 6px rgba(0, 0, 0, 0.1);
@@ -115,11 +122,24 @@ const toDetailProduct = (product_id) => {
 
 .delete {
   cursor: pointer;
+  color: #FF8F59;
+}
+.delete:hover {
+  color: red;
+}
+
+.edit {
+  cursor: pointer;
+  margin-left: 20px;
+  color: #84C1FF;
+}
+.edit:hover {
+  color: #004B97;
 }
 
 .delete-button {
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-start;
   font-size: 20px;
   width: 100%
 }
@@ -127,13 +147,10 @@ const toDetailProduct = (product_id) => {
 .add-time {
   font-size: 10px;
   margin-right: 20px;
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
 }
 
-.delete {
-  color: #FF8F59;
-}
 
-.delete:hover {
-  color: red;
-}
 </style>
