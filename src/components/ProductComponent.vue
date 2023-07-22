@@ -1,6 +1,6 @@
 <template>
   <div class="product-wrapper" v-for="(item) in storeProduct.products" v-bind:key="item.id">
-    <div class="product-img" :style="`background-image: url('${item.avatar}')`"></div>
+    <div class="product-img" :style="`background-image: url('${item.avatar}')`" @click="toDetailProduct(item.id)"></div>
     <div class="product-text">
       <div class="product-name">{{ item.name }}</div>
       <div class="product-text">{{ item.description }}</div>
@@ -21,6 +21,7 @@ import { useMessageStore } from '../stores/message'
 import axiosHelper from '../../helpers/axios-helper'
 import tokenHelpers from '../../helpers/token-helpers'
 import ButtonComponent from './ButtonComponent.vue'
+import router from '../router'
 const storeLogin = useLoginStore()
 const storeProduct = productStore()
 const storeMessage = useMessageStore()
@@ -46,6 +47,11 @@ const addToShopcar = async (productId) => {
 
 }
 
+// 跳轉至商品詳細頁
+const toDetailProduct = (product_id) => {
+  router.push(`/product/${product_id}`)
+}
+
 </script>
 
 <style scoped>
@@ -69,6 +75,7 @@ const addToShopcar = async (productId) => {
   background-position: center center;
   background-size: cover;
   background-repeat: no-repeat;
+  cursor: pointer;
 }
 
 .product-text {

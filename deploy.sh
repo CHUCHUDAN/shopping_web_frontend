@@ -21,9 +21,9 @@ git add -A
 git commit -m 'deploy'
 
 # if you are deploying to https://CHUCHUDAN.github.io
-git push -f git@github.com:CHUCHUDAN/CHUCHUDAN.github.io.git main
+# git push -f git@github.com:CHUCHUDAN/CHUCHUDAN.github.io.git main
 
 # if you are deploying to https://CHUCHUDAN.github.io/shopping_web_frontend
-# git push -f git@github.com:CHUCHUDAN/shopping_web_frontend.git main:gh-pages
+git push -f git@github.com:CHUCHUDAN/shopping_web_frontend.git main:gh-pages
 
 cd -
