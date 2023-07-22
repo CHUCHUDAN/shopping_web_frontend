@@ -8,7 +8,7 @@ export default defineConfig({
   plugins: [
     vue(),
   ],
-  base: "shopping_web_frontend/",
+  base: "/shopping_web_frontend/",
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url))
