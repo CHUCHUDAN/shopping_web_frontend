@@ -4,24 +4,24 @@
     <AlertComponent></AlertComponent>
     <div class="product-wrapper">
       <div class="product-head">
-        <div class="product-img" :style="`background-image: url('${storeProduct.product?.avatar}')`">
+        <div class="product-img" :style="`background-image: url('${storeProduct.product.avatar}')`">
         </div>
         <div class="product-text">
-          <div class="product-name">商品名稱: <span class="text-span">{{ storeProduct.product?.name }}</span></div>
-          <div class="seller">商家資訊: <span class="text-span">{{ storeProduct.product?.User?.name }}</span></div>
-          <div class="product-name">商品存貨量: <span class="text-span">{{ storeProduct.product?.inventory_quantity }}</span>
+          <div class="product-name">商品名稱: <span class="text-span">{{ storeProduct.product.name }}</span></div>
+          <div class="seller" @click="toSellerProfile(storeProduct.product.User?.id)">商家資訊: <span class="text-seller">{{ storeProduct.product.User?.name }}</span></div>
+          <div class="product-inventory">商品存貨量: <span class="text-span">{{ storeProduct.product.inventory_quantity }}</span>
           </div>
-          <div class="price"> 商品售價: <span class="text-price">$ {{ storeProduct.product?.price }}</span></div>
+          <div class="price"> 商品售價: <span class="text-price">$ {{ storeProduct.product.price }}</span></div>
         </div>
       </div>
       <div class="product-description">
-        商品描述: <span class="description-span">{{ storeProduct.product?.description }}</span>
+        商品描述: <span class="description-span">{{ storeProduct.product.description }}</span>
       </div>
       <div class="product-button">
         <ButtonComponent msg="上一頁" backgroundColor="background-color:#BEBEBE" @click="goBack()">
         </ButtonComponent>
         <ButtonComponent v-if="storeLogin.buttonOn" msg="加入購物車" backgroundColor="background-color:#FF9797"
-          @click="addToShopcar(storeProduct.product?.id)">
+          @click="addToShopcar(storeProduct.product.id)">
         </ButtonComponent>
       </div>
     </div>
@@ -41,6 +41,7 @@ import tokenHelpers from '../../helpers/token-helpers'
 import { useLoginStore } from '../stores/login'
 import { productStore } from '../stores/product'
 import { useMessageStore } from '../stores/message'
+import router from '../router'
 const storeLogin = useLoginStore()
 const storeProduct = productStore()
 const storeMessage = useMessageStore()
@@ -87,6 +88,12 @@ onMounted(async () => {
   return storeProduct.product = data.product
 })
 
+// 前往商家頁面
+const toSellerProfile = (seller_id) => {
+  router.push(`/seller/${seller_id}`)
+}
+
+
 // 上一頁按鈕
 const goBack = () => {
   window.history.back()
@@ -102,7 +109,7 @@ const goBack = () => {
   grid-template-rows: 4fr 1.2fr 0.5fr;
   grid-gap: 5px;
   height: auto;
-  max-height: 800px;
+  max-height: 1000px;
   width: 800px;
   padding: 20px;
   margin: 0 auto;
@@ -139,9 +146,14 @@ const goBack = () => {
   color: #5B5B5B;
 }
 
-.text-span {
+.text-span, .text-seller {
   font-size: 18px;
   padding-left: 20px;
+}
+
+.text-seller:hover {
+  color: #84C1FF;
+  cursor: pointer;
 }
 
 .text-price {

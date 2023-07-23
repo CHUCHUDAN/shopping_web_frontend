@@ -19,19 +19,20 @@
 
 <script setup>
 import { onMounted } from 'vue'
-import { useRouter } from 'vue-router'
 import tokenHelpers from '../../helpers/token-helpers'
 import axiosHelper from '../../helpers/axios-helper'
 import { useMessageStore } from '../stores/message'
 import { productStore } from '../stores/product'
+import { useLoginStore } from '../stores/login'
 import AlertComponent from '../components/AlertComponent.vue'
 import HeaderComponent from '../components/HeaderComponent.vue'
 import FooterComponent from '../components/FooterComponent.vue'
 import StoreProduct from '../components/StoreProduct.vue'
 import ButtonComponent from '../components/ButtonComponent.vue'
-const router = useRouter()
+import router from '../router'
 const storeMessage = useMessageStore()
 const storeProduct = productStore()
+const storeLogin = useLoginStore()
 
 {
   AlertComponent
@@ -45,14 +46,14 @@ const storeProduct = productStore()
 storeMessage.clearErrorMessages()
 
 onMounted(async () => {
-  // 將token放進header中發送驗證
 
+  // 將token放進header中發送驗證
   const token = tokenHelpers.putTokenToHeader()
   const res = await axiosHelper.GET('/api/v1/users', undefined, token)
-  const { success, user } = res.data
+  const { success, data } = res.data
 
   // api失敗
-  if (!success || user.role !== 'seller') {
+  if (!success || data.user.role !== 'seller') {
     return router.push('/')
   }
 })
@@ -68,6 +69,8 @@ onMounted(async () => {
   if (!success) return storeMessage.setError(message)
 
   // api成功
+
+  storeLogin.isSelfUser = true
   return storeProduct.setProduct(data.products)
 })
 

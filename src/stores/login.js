@@ -5,7 +5,10 @@ export const useLoginStore = defineStore('login', {
     loginSwitch: 'login',
     isBuyer: false,
     isSeller: false,
-    buttonOn: false
+    isUser: false,
+    buttonOn: false,
+    user: {},
+    isSelfUser: ''
   }),
   getters: {
   },
@@ -21,6 +24,9 @@ export const useLoginStore = defineStore('login', {
     },
     setButtonOn(statement) {
       this.buttonOn = statement
+    },
+    setIsUser(statement) {
+      this.isUser = statement
     }
   }
 })

@@ -15,6 +15,18 @@ const router = createRouter({
       name: 'register',
       component: () => import('../views/RegisterPage.vue')
     },
+    // 使用者頁面
+    {
+      path: '/user/profile',
+      name: 'profile',
+      component: () => import('../views/UserProfilePage.vue')
+    },
+    // 商家個人資訊頁面
+    {
+      path: '/seller/:seller_id',
+      name: 'sellerProfile',
+      component: () => import('../views/SellerProfilePage.vue')
+    },
     // 購物車頁面
     {
       path: '/shopcars',
