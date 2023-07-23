@@ -11,8 +11,8 @@
       <div class="product-name">商品名稱: {{ item.name }}</div>
       <div class="product-description">商品描述: {{ item.description }}</div>
       <div class="delete-button">
-        <i class="fa-solid fa-trash delete" product-id="item.product_id" @click="deleteShop(item.id)"></i>
-        <i class="fa-solid fa-pen edit" @click="toEditProduct(item.id)"></i>
+        <i v-if="storeLogin.isSelfUser" class="fa-solid fa-trash delete" product-id="item.product_id" @click="deleteShop(item.id)"></i>
+        <i v-if="storeLogin.isSelfUser" class="fa-solid fa-pen edit" @click="toEditProduct(item.id)"></i>
         <span class="add-time">上架時間: {{ item.addShopTime }}</span>
       </div>
     </div>
@@ -23,11 +23,13 @@
 import tokenHelpers from '../../helpers/token-helpers'
 import { productStore } from '../stores/product'
 import { useMessageStore } from '../stores/message'
+import { useLoginStore } from '../stores/login'
 import axiosHelper from '../../helpers/axios-helper'
 import ButtonComponent from './ButtonComponent.vue'
 import router from '../router'
 const storeProduct = productStore()
 const storeMessage = useMessageStore()
+const storeLogin = useLoginStore()
 
 {
   ButtonComponent
@@ -54,7 +56,7 @@ const toDetailProduct = (product_id) => {
   router.push(`/product/${product_id}`)
 }
 
-// 跳轉置商品編輯頁
+// 跳轉至商品編輯頁
 const toEditProduct = (product_id) => {
   router.push(`/product/edit/${product_id}`)
 }
