@@ -22,7 +22,9 @@
       </div>
       <div class="user-button">
         <i class="fa-solid fa-circle-arrow-left back" @click="goBack()"></i>
-        <i class="fa-solid fa-pen edit"></i>
+        <router-link to="/user/profile/edit">
+          <i class="fa-solid fa-pen edit"></i>
+        </router-link>
       </div>
     </div>
   </div>
@@ -30,12 +32,14 @@
 </template>
 
 <script setup>
+import { onMounted } from 'vue'
 import AlertComponent from '../components/AlertComponent.vue'
 import ButtonComponent from '../components/ButtonComponent.vue'
 import HeaderComponent from '../components/HeaderComponent.vue'
 import FooterComponent from '../components/FooterComponent.vue'
 import { useMessageStore } from '../stores/message'
 import { useLoginStore } from '../stores/login'
+import router from '../router'
 const storeMessage = useMessageStore()
 const storeLogin = useLoginStore()
 
@@ -48,7 +52,13 @@ const storeLogin = useLoginStore()
 
 // message初始化
 storeMessage.clearErrorMessages()
-storeMessage.clearSuccessMessages()
+
+// 檢查是否登入過，未登入會被導向首頁
+onMounted(() => {
+  if (storeLogin.user.role !== 'seller' && storeLogin.user.role !== 'buyer') {
+    router.push('/')
+  }
+})
 
 // 上一頁按鈕
 const goBack = () => {
@@ -59,6 +69,13 @@ const goBack = () => {
 </script>
 
 <style scoped>
+
+.users-wrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
 .user-wrapper {
   display: grid;
   grid-template-columns: 1fr;
@@ -131,6 +148,7 @@ const goBack = () => {
   margin-left: 30px;
   color: #84C1FF;
 }
+
 .edit:hover {
   color: #004B97;
 }

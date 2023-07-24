@@ -26,6 +26,7 @@ import tokenHelpers from '../../helpers/token-helpers'
 import axiosHelper from '../../helpers/axios-helper'
 import { useMessageStore } from '../stores/message'
 import { productStore } from '../stores/product'
+import { useLoginStore } from '../stores/login'
 import AlertComponent from '../components/AlertComponent.vue'
 import HeaderComponent from '../components/HeaderComponent.vue'
 import FooterComponent from '../components/FooterComponent.vue'
@@ -34,6 +35,7 @@ import ButtonComponent from '../components/ButtonComponent.vue'
 const router = useRouter()
 const storeMessage = useMessageStore()
 const storeProduct = productStore()
+const storeLogin = useLoginStore()
 {
   AlertComponent
   HeaderComponent
@@ -46,17 +48,9 @@ const storeProduct = productStore()
 storeMessage.clearErrorMessages()
 storeMessage.clearSuccessMessages()
 
-onMounted(async () => {
-  // 將token放進header中發送驗證
-
-  const token = tokenHelpers.putTokenToHeader()
-  const res = await axiosHelper.GET('/api/v1/users', undefined, token)
-  const { success, user } = res.data
-
-  // api失敗
-  if (!success || user.role !== 'buyer') {
-    return router.push('/')
-  }
+// 檢查是否為buyer
+onMounted(() => {
+  if (storeLogin.user.role !== 'buyer') return router.push('/')
 })
 
 // 取得購物車所有商品api

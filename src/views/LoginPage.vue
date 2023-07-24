@@ -34,10 +34,10 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import axiosHelper from '../../helpers/axios-helper'
-import tokenHelpers from '../../helpers/token-helpers'
 import { useRouter } from 'vue-router'
 import { useMessageStore } from '../stores/message'
 import { useFormStore } from '../stores/form-store'
+import { useLoginStore } from '../stores/login'
 import ButtonComponent from '../components/ButtonComponent.vue'
 import FormComponent from '../components/FormComponent.vue'
 import AlertComponent from '../components/AlertComponent.vue'
@@ -46,6 +46,7 @@ import FooterComponent from '../components/FooterComponent.vue'
 const router = useRouter()
 const storeMessage = useMessageStore()
 const storeForm = useFormStore()
+const storeLogin = useLoginStore()
 
 {
   ButtonComponent
@@ -58,7 +59,12 @@ const storeForm = useFormStore()
 // message初始化
 storeMessage.clearErrorMessages()
 
-
+// 檢查是否登入過，已登入會被導向首頁
+onMounted(() => {
+  if (storeLogin.user.role === 'seller' || storeLogin.user.role === 'buyer') {
+    router.push('/')
+  }
+})
 
 // 表單樣式
 const formClass = ref('')
@@ -87,25 +93,13 @@ const login = async (e) => {
   if (!success) {
     return storeMessage.setError(message)
   } 
+
+  // 登入成功
   localStorage.setItem("token", data.token)
   storeMessage.setSuccess('登入成功')
 
   router.push('/')
 } 
-
-onMounted(async () => {
-
-  // 如果已登入就導回首頁
-  // 將token放進header中發送驗證
-
-  const res = await tokenHelpers.tokenCheck()
-  const { success } = res.data
-
-    // api成功
-  if (success) return router.push('/')
-
-
-})
 
 
 </script>
