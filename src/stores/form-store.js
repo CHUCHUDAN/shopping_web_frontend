@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 
-export const useFormStore = defineStore('shop', {
+export const useFormStore = defineStore('form-store', {
   state: () => ({
     name: '',
     price: 0,
@@ -10,7 +10,9 @@ export const useFormStore = defineStore('shop', {
     account: '',
     password: '',
     passwordCheck: '',
-    role: 'buyer'
+    role: 'buyer',
+    email: '',
+    phone: '',
   }),
   getters: {
   },

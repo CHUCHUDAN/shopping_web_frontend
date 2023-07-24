@@ -21,6 +21,12 @@ const router = createRouter({
       name: 'profile',
       component: () => import('../views/UserProfilePage.vue')
     },
+    // 使用者資料編輯頁面
+    {
+      path: '/user/profile/edit',
+      name: 'profileEdit',
+      component: () => import('../views/UserEditPage.vue')
+    },
     // 商家個人資訊頁面
     {
       path: '/seller/:seller_id',

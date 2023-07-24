@@ -22,7 +22,9 @@
       </div>
       <div class="user-button">
         <i class="fa-solid fa-circle-arrow-left back" @click="goBack()"></i>
-        <i v-if="storeLogin.isSelfUser" class="fa-solid fa-pen edit"></i>
+        <router-link to="/user/profile/edit">
+          <i v-if="storeLogin.isSelfUser" class="fa-solid fa-pen edit"></i>
+        </router-link>
       </div>
     </div>
     <div class="products-wrapper">
@@ -180,12 +182,14 @@ const goBack = () => {
 .back:hover {
   color: black;
 }
+
 .edit {
   cursor: pointer;
   font-size: 25px;
   margin-left: 30px;
   color: #84C1FF;
 }
+
 .edit:hover {
   color: #004B97;
 }

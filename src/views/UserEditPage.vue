@@ -3,25 +3,33 @@
   <div class="wrapper">
     <div class="form-wrapper">
       <div class="form-title">
-        <h3>編輯商品</h3>
+        <h3>編輯使用者資料</h3>
         <AlertComponent></AlertComponent>
       </div>
-      <form @submit.prevent="editShop" :class="formClass" novalidate>
-        <FormComponent label-for="name" label-text="商品名稱" span-text="※填寫1-100字商品名稱" input-placeholder="請輸入商品名稱"
-          input-type="text" min-length="1" max-length="100" inputRequired="true" invalid-text="此項目為必填，字數限制1-100" :value="storeForm.name">
+      <form @submit.prevent="editUser" :class="formClass" novalidate>
+
+        <FormComponent label-for="name" label-text="名稱" span-text="※注意請填寫1-20字名稱" input-placeholder="請輸入使用者名稱"
+          input-type="text" min-length="1" max-length="20" inputRequired="true" invalid-text="此項目為必填，字數限制1-20字"
+          :value="storeForm.name">
         </FormComponent>
-        <FormComponent label-for="price" label-text="售價" span-text="※注意售價為必填" input-placeholder="請輸入售價"
-          input-type="number" inputRequired="true" invalid-text='此項目為必填' :value="storeForm.price">
+
+        <FormComponent label-for="account" label-text="帳號" span-text="※注意請填寫1-50字帳號" input-placeholder="請輸入使用者帳號"
+          input-type="text" min-length="1" max-length="50" inputRequired="true" invalid-text='此項目為必填，字數限制1-50字' :value="storeForm.account">
         </FormComponent>
-        <FormComponent label-for="inventory" label-text="存貨量" span-text="※注意存貨量為必填" input-placeholder="請輸入存貨量"
-          input-type="number" inputRequired="true" invalid-text='此項目為必填' :value="storeForm.inventory">
+
+        <FormComponent label-for="email" label-text="信箱" span-text="※注意信箱非必填，請輸入3-50字信箱" input-placeholder="請輸入有效信箱"
+          input-type="email"  min-length="3" max-length="50" inputRequired="false" invalid-text='此項目非必填，請輸入正確信箱格式' :value="storeForm.email">
         </FormComponent>
-        <FormComponent label-for="avatar" label-text="商品圖片" span-text="※注意商品圖片為必填" input-placeholder=""
-          @change="onFileChange" input-type="file" inputRequired="true" invalid-text='此項目為必填' >
+
+        <FormComponent label-for="phone" label-text="手機" span-text="※注意手機為非必填，請輸入10碼手機號碼" input-placeholder="請輸入手機號碼"
+          input-type="text" min-length="10" max-length="10" inputRequired="false" invalid-text='此項目非必填，請輸入正確手機格式'
+          :value="storeForm.phone">
         </FormComponent>
-        <FormComponent label-for="description" label-text="商品描述" span-text="※注意商品描述為必填" input-placeholder="請輸入商品描述"
-          input-type="textarea" min-length="1" max-length="400" inputRequired="true" invalid-text='此項目為必填' :value="storeForm.description">
+
+        <FormComponent label-for="avatar" label-text="使用者大頭貼" span-text="※注意使用者大頭貼非必填" input-placeholder=""
+          @change="onFileChange" input-type="file" inputRequired="false" invalid-text='此項目非必填'>
         </FormComponent>
+
         <div>
           <ButtonComponent msg="更新" backgroundColor="background-color:#FFBD9D" type="submit" @click="addFormClass">
           </ButtonComponent>
@@ -36,7 +44,7 @@
 import { ref, onMounted } from 'vue'
 import axiosHelper from '../../helpers/axios-helper'
 import tokenHelpers from '../../helpers/token-helpers'
-import { useRoute, useRouter } from 'vue-router'
+import { useRouter } from 'vue-router'
 import { useMessageStore } from '../stores/message'
 import { useFormStore } from '../stores/form-store'
 import { useLoginStore } from '../stores/login'
@@ -45,7 +53,6 @@ import FormComponent from '../components/FormComponent.vue'
 import AlertComponent from '../components/AlertComponent.vue'
 import HeaderComponent from '../components/HeaderComponent.vue'
 import FooterComponent from '../components/FooterComponent.vue'
-const route = useRoute()
 const router = useRouter()
 const storeMessage = useMessageStore()
 const storeForm = useFormStore()
@@ -67,29 +74,35 @@ storeMessage.clearSuccessMessages()
 const formClass = ref('')
 
 const addFormClass = () => {
+  window.scrollTo({ top: 0, behavior: 'smooth' })
   formClass.value = 'was-validated'
 }
 
-// 檢查是否為seller
+// 檢查是否登入過，未登入會被導向首頁
 onMounted(() => {
-  if (storeLogin.user.role !== 'seller') return router.push('/')
+  if (storeLogin.user.role !== 'seller' && storeLogin.user.role !== 'buyer') {
+    router.push('/')
+  }
 })
 
-// 顯示單一商品api
+// 顯示單一使用者api
 onMounted(async () => {
 
-  const productId = route.params.product_id
-  const res = await axiosHelper.GET(`/api/v1/products/${productId}`)
+  const token = tokenHelpers.putTokenToHeader()
+  const res = await axiosHelper.GET('/api/v1/users', undefined, token)
   const { data, success, message } = res.data
 
   // api失敗
   if (!success) return storeMessage.setError(message)
+
   // api成功
-  storeForm.name = data.product.name
-  storeForm.price = data.product.price
-  storeForm.inventory = data.product.inventory_quantity
-  storeForm.avatar = data.product.avatar
-  storeForm.description = data.product.description
+  storeForm.name = data.user.name
+  storeForm.account = data.user.account
+  storeForm.email = data.user.email
+  storeForm.phone = data.user.phone
+  storeForm.avatar = data.user.avatar
+
+
 })
 
 
@@ -99,9 +112,9 @@ const onFileChange = (event) => {
   storeForm.avatar = selectedFile
 }
 
-// 編輯商品api
+// 編輯使用者api
 
-const editShop = async (e) => {
+const editUser = async (e) => {
 
   const form = e.target
 
@@ -110,12 +123,12 @@ const editShop = async (e) => {
 
   const token = tokenHelpers.putTokenToHeader()
 
-  const res = await axiosHelper.formDataPUT(`/api/v1/stores/${route.params.product_id}`, {
+  const res = await axiosHelper.formDataPUT('/api/v1/users', {
     name: storeForm.name,
-    price: storeForm.price,
-    inventory: storeForm.inventory,
-    avatar: storeForm.avatar,
-    description: storeForm.description
+    account: storeForm.account,
+    email: storeForm.email,
+    phone: storeForm.phone,
+    avatar: storeForm.avatar
   }, token)
   const { success, message } = res.data
 
@@ -126,7 +139,7 @@ const editShop = async (e) => {
   // api成功
   storeMessage.setSuccess(message)
 
-  router.push('/stores')
+  router.push('/user/profile')
 }
 
 

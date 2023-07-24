@@ -39,6 +39,7 @@ import tokenHelpers from '../../helpers/token-helpers'
 import { useRouter } from 'vue-router'
 import { useMessageStore } from '../stores/message'
 import { useFormStore } from '../stores/form-store'
+import { useLoginStore } from '../stores/login'
 import ButtonComponent from '../components/ButtonComponent.vue'
 import FormComponent from '../components/FormComponent.vue'
 import AlertComponent from '../components/AlertComponent.vue'
@@ -47,6 +48,7 @@ import FooterComponent from '../components/FooterComponent.vue'
 const router = useRouter()
 const storeMessage = useMessageStore()
 const storeForm = useFormStore()
+const storeLogin = useLoginStore()
 
 {
   ButtonComponent
@@ -67,17 +69,9 @@ const addFormClass = () => {
   formClass.value = 'was-validated'
 }
 
-onMounted(async () => {
-  // 將token放進header中發送驗證
-
-  const token = tokenHelpers.putTokenToHeader()
-  const res = await axiosHelper.GET('/api/v1/users', undefined, token)
-  const { success, user } = res.data
-
-  // api失敗
-  if (!success || user.role !== 'seller') {
-    return router.push('/')
-  }
+// 檢查是否為seller
+onMounted(() => {
+  if (storeLogin.user.role !== 'seller') return router.push('/')
 })
 
 const onFileChange = (event) => {
@@ -106,11 +100,11 @@ const addShop = async (e) => {
   }, token)
   const { success, message } = res.data
 
-  // 登入失敗
+  // api失敗
   if (!success) {
     return storeMessage.setError(message)
   }
-
+  // ap成功
   storeMessage.setSuccess(message)
 
   router.push('/stores')

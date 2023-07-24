@@ -3,7 +3,7 @@
     <label class="form-label" :for="labelFor">{{ labelText }}</label>
     <span class="form-text">{{ spanText }}</span>
     <input class="form-input" :type="inputType" :id="labelFor" :name="labelFor" :placeholder="inputPlaceholder"
-      :minlength="minLength" :maxlength="maxLength" :pattern="inputPattern" :required="inputRequired" :value="value" @input="inputSend" >
+      :minlength="minLength" :maxlength="maxLength" :pattern="inputPattern" :required="JSON.parse(inputRequired)"  :value="value" @input="inputSend" >
     <div class="invalid-text">{{ invalidText }}</div>
     <div class="valid-text">{{ '&#10003;' }}</div>
   </div>

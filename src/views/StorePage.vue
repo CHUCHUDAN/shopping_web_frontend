@@ -45,17 +45,9 @@ const storeLogin = useLoginStore()
 // message初始化
 storeMessage.clearErrorMessages()
 
-onMounted(async () => {
-
-  // 將token放進header中發送驗證
-  const token = tokenHelpers.putTokenToHeader()
-  const res = await axiosHelper.GET('/api/v1/users', undefined, token)
-  const { success, data } = res.data
-
-  // api失敗
-  if (!success || data.user.role !== 'seller') {
-    return router.push('/')
-  }
+// 檢查是否為seller
+onMounted(() => {
+  if (storeLogin.user.role !== 'seller') return router.push('/')
 })
 
 // 取得商家所有商品api
