@@ -70,7 +70,7 @@ const toEditProduct = (product_id) => {
   grid-template-rows: 100%;
   grid-gap: 5px;
   height: 150px;
-  width: 800px;
+  width: 700px;
   padding: 15px;
   border-radius: 10px;
   position: relative;

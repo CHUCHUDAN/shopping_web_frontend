@@ -10,6 +10,7 @@ export const useFormStore = defineStore('form-store', {
     account: '',
     password: '',
     passwordCheck: '',
+    passwordOld: '',
     role: 'buyer',
     email: '',
     phone: '',

@@ -25,6 +25,9 @@
         <router-link to="/user/profile/edit">
           <i class="fa-solid fa-pen edit"></i>
         </router-link>
+        <router-link to="/user/password/edit">
+          <i class="fa-solid fa-lock password"></i>
+        </router-link>
       </div>
     </div>
   </div>
@@ -69,13 +72,13 @@ const goBack = () => {
 </script>
 
 <style scoped>
-
 .users-wrapper {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
 }
+
 .user-wrapper {
   display: grid;
   grid-template-columns: 1fr;
@@ -83,7 +86,7 @@ const goBack = () => {
   grid-gap: 5px;
   height: auto;
   max-height: 800px;
-  width: 800px;
+  width: 700px;
   padding: 20px;
   margin: 0 auto;
   border-radius: 10px;
@@ -102,11 +105,12 @@ const goBack = () => {
 }
 
 .user-img {
-  width: 300px;
-  height: 300px;
+  width: 200px;
+  height: 200px;
   background-position: center center;
   background-size: cover;
   background-repeat: no-repeat;
+  border-radius: 50%;
 }
 
 .user-text {
@@ -150,6 +154,17 @@ const goBack = () => {
 }
 
 .edit:hover {
+  color: #004B97;
+}
+
+.password {
+  cursor: pointer;
+  font-size: 25px;
+  margin-left: 30px;
+  color: #84C1FF;
+}
+
+.password:hover {
   color: #004B97;
 }
 </style>
