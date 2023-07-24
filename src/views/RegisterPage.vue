@@ -200,4 +200,8 @@ form {
   display: table-cell;
   vertical-align: middle;
 }
+
+.register-text-link {
+  text-decoration: none;
+}
 </style>

@@ -1,7 +1,10 @@
 <template>
   <header>
     <div class="title-wrapper">
-      <router-link to="/home" class="title">我的電商網站</router-link>
+      <router-link to="/home" class="title">
+        <img class="logo-img" src="../../public/shark_logo.png" alt="圖片未正確顯示">
+        <div class="logo-text">丹尼購物</div>
+      </router-link>
     </div>
     <div class="func-wrapper">
       <router-link to="/user/profile" class="userPic" v-if="storeLogin.isUser">
@@ -99,9 +102,21 @@ const clickHandler = () => {
 header {
   background-color: #FF5809;
   display: grid;
+  height: 80px;
   grid-template-columns: repeat(2, 1fr);
   grid-template-rows: 1fr;
   grid-gap: 20px;
+}
+
+.logo-img {
+  height: 80px;
+  margin-left: 10px;
+}
+
+.logo-text {
+  color: #F0F0F0;
+  font-size: 25px;
+  margin-left: 5px;
 }
 
 .title-wrapper {
@@ -113,6 +128,9 @@ header {
 .title {
   color: black;
   font-size: 40px;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
 }
 
 .func-wrapper {
@@ -128,6 +146,7 @@ header {
 .userPic {
   display: flex;
   align-items: center;
+  text-decoration: none;
 }
 
 .user-pic {
@@ -142,7 +161,10 @@ header {
 .user-account {
   margin-left: 10px;
   color: white;
+  font-size: 15px;
+  text-decoration: none;
 }
+
 
 .user-account:hover {
   color: #5B5B5B;
@@ -169,6 +191,7 @@ header {
   align-items: center;
   justify-content: flex-end;
   padding-right: 10px;
+  text-decoration: none;
 }
 
 .user-logout-wrapper {

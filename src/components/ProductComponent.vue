@@ -87,7 +87,7 @@ const toDetailProduct = (product_id) => {
 
 .product-price {
   display: grid;
-  grid-template-columns: 0.5fr 1fr;
+  grid-template-columns: 0.4fr 1fr;
   grid-template-rows: 1fr;
   grid-gap: 10px;
   align-items: center;

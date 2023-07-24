@@ -129,4 +129,8 @@ form {
   grid-template-rows: repeat(2, 100px) 1fr;
   grid-gap: 20px;
 }
+
+.login-text-link {
+  text-decoration: none;
+}
 </style>

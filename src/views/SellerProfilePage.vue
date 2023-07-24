@@ -166,7 +166,7 @@ const goBack = () => {
 
 .text-span {
   font-size: 15px;
-  padding-left: 20px;
+  padding-left: 10px;
 }
 
 

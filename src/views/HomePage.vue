@@ -5,47 +5,55 @@
     <div class="search-wrapper">
       <form action="" class="form-wrapper">
         <div class="form-item">
-          <input class="form-input" type="text" maxlength="50" id="keyword" name="keyword" v-model="keyword"
-            placeholder="輸入關鍵字">
+          <input class="form-input" type="text" maxlength="50" id="keyword" name="keyword" :value="storePage.keyword"
+            @input="inputSend" @keyup="storePage.getProducts(1)" placeholder="輸入關鍵字">
         </div>
         <div class="form-item">
-          <input class="form-input" type="number" maxlength="50" id="minQuantity" name="minQuantity" v-model="minQuantity"
-            placeholder="輸入最小存貨量">
+          <input class="form-input" type="number" maxlength="50" id="minQuantity" name="minQuantity"
+            :value="storePage.minQuantity" @input="inputSend" @keyup="storePage.getProducts(1)" placeholder="輸入最小存貨量">
         </div>
         <div class="form-item">
-          <input class="form-input" type="number" maxlength="50" id="maxQuantity" name="maxQuantity" v-model="maxQuantity"
-            placeholder="輸入最大存貨量">
+          <input class="form-input" type="number" maxlength="50" id="maxQuantity" name="maxQuantity"
+            :value="storePage.maxQuantity" @input="inputSend" @keyup="storePage.getProducts(1)" placeholder="輸入最大存貨量">
         </div>
         <div class="form-item">
-          <input class="form-input" type="number" maxlength="50" id="min" name="min" v-model="min" placeholder="輸入最小金額">
+          <input class="form-input" type="number" maxlength="50" id="min" name="min" :value="storePage.min"
+            @input="inputSend" @keyup="storePage.getProducts(1)" placeholder="輸入最小金額">
         </div>
         <div class="form-item">
-          <input class="form-input" type="number" maxlength="50" id="max" name="max" v-model="max" placeholder="輸入最大金額">
+          <input class="form-input" type="number" maxlength="50" id="max" name="max" :value="storePage.max"
+            @input="inputSend" @keyup="storePage.getProducts(1)" placeholder="輸入最大金額">
         </div>
-        <ButtonComponent msg="搜尋" backgroundColor="background-color:#D0D0D0" type="button" @click="searchProduct">
-        </ButtonComponent>
+        <div class="button-wrapper">
+          <ButtonComponent class="search-button" msg="搜尋" backgroundColor="background-color:#D0D0D0" type="button"
+            @click="storePage.getProducts(1)">
+          </ButtonComponent>
+          <ButtonComponent class="clear-button" msg="清除" backgroundColor="background-color:	#FFAD86" type="button"
+            @click="storePage.clearSearch()">
+          </ButtonComponent>
+        </div>
       </form>
     </div>
     <div class="products-wrapper">
-      <ProductComponent ></ProductComponent>
+      <ProductComponent></ProductComponent>
     </div>
+    <PaginationComponent :currentPage="storePage.currentPage"></PaginationComponent>
   </div>
- <FooterComponent></FooterComponent>
+  <FooterComponent></FooterComponent>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
-import axiosHelper from '../../helpers/axios-helper'
 import { useMessageStore } from '../stores/message'
-import { productStore } from '../stores/product'
+import { usePageStore } from '../stores/page'
 import AlertComponent from '../components/AlertComponent.vue'
 import ProductComponent from '../components/ProductComponent.vue'
 import FormComponent from '../components/FormComponent.vue'
 import ButtonComponent from '../components/ButtonComponent.vue'
 import HeaderComponent from '../components/HeaderComponent.vue'
 import FooterComponent from '../components/FooterComponent.vue'
+import PaginationComponent from '../components/PaginationComponent.vue'
 const storeMessage = useMessageStore()
-const storeProduct = productStore()
+const storePage = usePageStore()
 
 {
   AlertComponent
@@ -54,50 +62,20 @@ const storeProduct = productStore()
   ButtonComponent
   HeaderComponent
   FooterComponent
+  PaginationComponent
 }
 
 
 // message初始化
 storeMessage.clearErrorMessages()
 
-onMounted(async () => {
+// 取出所有商品 api
+storePage.getProducts(1)
 
-  // 取得所有商品api
-
-  const res = await axiosHelper.GET('/api/v1/products')
-  const { success, message } = res.data
-
-  // api失敗
-  if (!success) return storeMessage.setError(message)
-  // api成功
-  return storeProduct.setProduct(res.data.data.products)
-})
-
-
-// 搜尋、篩選商品
-
-const keyword = ref('')
-const min = ref('')
-const max = ref('')
-const minQuantity = ref('')
-const maxQuantity = ref('')
-
-
-const searchProduct = async () => {
-  const res = await axiosHelper.GET('api/v1/products', {
-    params: {
-      keyword: keyword.value,
-      min: min.value,
-      max: max.value,
-      minQuantity: minQuantity.value,
-      maxQuantity: maxQuantity.value
-    }
-  })
-  const { success, message } = res.data
-  // api失敗
-  if (!success) return storeMessage.setError(message)
-  // api成功
-  return storeProduct.setProduct(res.data.data.products)
+const inputSend = (e) => {
+  const value = e.target.value
+  const propName = e.target.id
+  storePage.setChangeInput(propName, value)
 }
 
 
@@ -106,9 +84,10 @@ const searchProduct = async () => {
 <style scoped>
 .home-wrapper {
   padding: 10px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-gap: 40px;
+  justify-items: center;
   align-items: center;
 }
 
@@ -117,14 +96,20 @@ const searchProduct = async () => {
   justify-content: flex-end;
 }
 
+.button-wrapper {
+  display: flex;
+  justify-content: space-around;
+  width: 100%;
+}
+
 .form-wrapper {
   display: grid;
-  grid-template-columns: repeat(6, 0.7fr);
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: 1fr 1fr;
   grid-gap: 30px;
   grid-auto-flow: row;
   justify-items: center;
   align-items: center;
-  margin: 20px;
 }
 
 .form-wrapper:hover {
@@ -142,14 +127,18 @@ const searchProduct = async () => {
   border: 50px;
 }
 
+.search-button {
+  width: 100px
+}
+
 
 
 .products-wrapper {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
+  grid-auto-flow: row;
   grid-gap: 30px;
   grid-auto-flow: row;
   justify-items: center;
 }
-
 </style>
