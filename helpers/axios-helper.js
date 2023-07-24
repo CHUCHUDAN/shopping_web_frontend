@@ -46,6 +46,15 @@ async function DELETE(url, params, token) {
   }
 }
 
+async function PUT(url, params, token) {
+  try {
+    const res = await shopAPI(token).put(url, params)
+    return res
+  } catch (err) {
+    return err.response
+  }
+}
+
 // 使用formData傳送
 
 const shopAPIFormData = (token) => {
@@ -82,6 +91,7 @@ export default  {
   GET,
   PATCH,
   DELETE,
+  PUT,
   formDataPOST,
   formDataPUT
 }

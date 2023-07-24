@@ -27,6 +27,12 @@ const router = createRouter({
       name: 'profileEdit',
       component: () => import('../views/UserEditPage.vue')
     },
+    // 使用者修改密碼
+    {
+      path: '/user/password/edit',
+      name: 'passwordEdit',
+      component: () => import('../views/UserEditPasswordPage.vue')
+    },
     // 商家個人資訊頁面
     {
       path: '/seller/:seller_id',

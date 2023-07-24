@@ -25,6 +25,9 @@
         <router-link to="/user/profile/edit">
           <i v-if="storeLogin.isSelfUser" class="fa-solid fa-pen edit"></i>
         </router-link>
+        <router-link to="/user/password/edit">
+          <i v-if="storeLogin.isSelfUser" class="fa-solid fa-lock password"></i>
+        </router-link>
       </div>
     </div>
     <div class="products-wrapper">
@@ -124,7 +127,7 @@ const goBack = () => {
   grid-gap: 5px;
   height: auto;
   max-height: 800px;
-  width: 800px;
+  width: 700px;
   padding: 20px;
   margin: 0 auto;
   border-radius: 10px;
@@ -143,11 +146,12 @@ const goBack = () => {
 }
 
 .user-img {
-  width: 300px;
-  height: 300px;
+  width: 200px;
+  height: 200px;
   background-position: center center;
   background-size: cover;
   background-repeat: no-repeat;
+  border-radius: 50%;
 }
 
 .user-text {
@@ -194,8 +198,20 @@ const goBack = () => {
   color: #004B97;
 }
 
+.password {
+  cursor: pointer;
+  font-size: 25px;
+  margin-left: 30px;
+  color: #84C1FF;
+}
+
+.password:hover {
+  color: #004B97;
+}
+
 .products-wrapper {
-  width: 800px;
+  width: 700px;
   margin: 50px auto 0 auto;
 }
+
 </style>
