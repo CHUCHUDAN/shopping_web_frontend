@@ -74,7 +74,7 @@ onMounted(async () => {
   padding: 10px;
   display: grid;
   grid-template-columns: 1fr;
-  padding: 50px;
+  padding: 10px;
   justify-items: center;
   align-items: center;
 }

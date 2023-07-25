@@ -1,27 +1,30 @@
 <template>
   <div>
+   <router-link class="paginaton" to="/home">
     <nav aria-label="Page navigation example">
       <ul class="pagination">
 
         <li class="page-item" ref="prev" :class="{ disabled: storePage.currentPage === 1 }"
           @click="prevClick(storePage.currentPage - 1, storePage.categoryId)">
-          <a to="/home" class="page-link " href="/#/home" aria-label="Previous">
+          <a class="page-link" href="" aria-label="Previous">
             <span aria-hidden="true">&laquo;</span>
           </a>
         </li>
 
         <li class="page-item" @click="storePage.getProducts(item, storePage.categoryId)"
-          :class="{ active: storePage.currentPage === item }" v-for="(item) in storePage.pages" v-bind:key="item"><a
-            class="page-link" href="/#/home">{{ item }}</a></li>
+          :class="{ active: storePage.currentPage === item }" v-for="(item) in storePage.pages" v-bind:key="item">
+          <a class="page-link" href="">{{ item }}</a>
+        </li>
 
         <li class="page-item" ref="next" :class="{ disabled: storePage.currentPage === storePage.totalPage }"
           @click="nextClick(storePage.currentPage + 1, storePage.categoryId)">
-          <a class="page-link" href="/#/home" aria-label="Next">
+          <a class="page-link" href="" aria-label="Next">
             <span aria-hidden="true">&raquo;</span>
           </a>
         </li>
       </ul>
     </nav>
+  </router-link>
   </div>
 </template>
 
@@ -47,3 +50,10 @@ const nextClick = (page, categoryId) => {
   storePage.getProducts(page, categoryId)
 }
 </script>
+
+<style scoped>
+.paginaton {
+  text-decoration: none;
+}
+
+</style>
