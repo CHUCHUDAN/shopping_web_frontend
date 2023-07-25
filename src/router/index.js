@@ -2,6 +2,13 @@ import { createRouter, createWebHashHistory } from 'vue-router'
 
 const router = createRouter({
   history: createWebHashHistory(import.meta.env.BASE_URL),
+  scrollBehavior: (to) => {
+    if (to.fullPath.match('home')) {
+      return {
+        top: 0
+      }
+    }
+  },
   routes: [
     // 登入頁面
     {
@@ -69,17 +76,23 @@ const router = createRouter({
       name: 'product',
       component: () => import('../views/ProductDetailPage.vue')
     },
-    // 首頁
+    // 首頁篩選
     {
-      path: '/',
+      path: '/home',
       name: 'home',
       component: () => import('../views/HomePage.vue')
+    },
+    // 首頁分類
+    {
+      path: '/',
+      name: 'category',
+      component: () => import('../views/HomeCategoryPage.vue')
     },
     // 如果沒有配對的路由
     {
       path: '/:pathMatch(.*)*',
       redirect: {
-        name: 'home'
+        name: 'category'
       }
     }
   ]

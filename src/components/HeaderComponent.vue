@@ -1,7 +1,7 @@
 <template>
   <header>
     <div class="title-wrapper">
-      <router-link to="/home" class="title">
+      <router-link to="/" class="title">
         <img class="logo-img" src="../../public/shark_logo.png" alt="圖片未正確顯示">
         <div class="logo-text">丹尼購物</div>
       </router-link>

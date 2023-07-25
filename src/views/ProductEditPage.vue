@@ -18,7 +18,8 @@
           <label for="category" class="form-label">商品分類</label>
           <span class="form-text">※注意商品分類為必填</span>
           <select class="form-input" @input="inputSend" name="category" id="category" required>
-            <option class="form-input" :value="storeForm.defautCategory.id" selected>{{ storeForm.defautCategory.name }}</option>
+            <option class="form-input" :value="storeForm.defautCategory?.id" selected>{{ storeForm.defautCategory?.name }}
+            </option>
             <option class="form-input" :value="item.id" v-for="(item) in storeProduct.categories" v-bind:key="item.id">{{
               item.name }}
             </option>
@@ -91,37 +92,39 @@ onMounted(() => {
   if (storeLogin.user.role !== 'seller') return router.push('/')
 })
 
-// 取得所有商品分類api
+// 取得所有商品分類api &&  顯示單一商品api
+
 onMounted(async () => {
-
-  const res = await axiosHelper.GET('/api/v1/products/categories')
-  const { data, success, message } = res.data
-
-  // api失敗
-  if (!success) return storeMessage.setError(message)
-  // api成功
-  return storeProduct.categories = data.categories
-})
-
-// 顯示單一商品api
-onMounted(async () => {
-
   const productId = route.params.product_id
-  const res = await axiosHelper.GET(`/api/v1/products/${productId}`)
-  const { data, success, message } = res.data
+
+  // 使用 Promise.all 同時取得兩個 API 的回應
+  const [categoriesRes, productDetailsRes] = await Promise.all([
+    axiosHelper.GET('/api/v1/products/categories'),
+    axiosHelper.GET(`/api/v1/products/${productId}`)
+  ])
+
+  const categoriesData = categoriesRes.data
+  const productDetailsData = productDetailsRes.data
+
 
   // api失敗
-  if (!success) return storeMessage.setError(message)
+  if (!categoriesData.success || !productDetailsData.success) {
+    return storeMessage.setError(categoriesData.message || productDetailsData.message)
+  }
 
-  storeProduct.filterCategories(data.product.Category)
-  // api成功
-  storeForm.name = data.product.name
-  storeForm.price = data.product.price
-  storeForm.inventory = data.product.inventory_quantity
-  storeForm.avatar = data.product.avatar
-  storeForm.description = data.product.description
-  storeForm.defautCategory = data.product.Category
+  // api 成功
+  storeProduct.categories = categoriesData.data.categories
+  storeProduct.filterCategories(productDetailsData.data.product.Category)
+
+  storeForm.name = productDetailsData.data.product.name
+  storeForm.price = productDetailsData.data.product.price
+  storeForm.inventory = productDetailsData.data.product.inventory_quantity
+  storeForm.avatar = productDetailsData.data.product.avatar
+  storeForm.description = productDetailsData.data.product.description
+  storeForm.defautCategory = productDetailsData.data.product.Category
+  storeForm.category = productDetailsData.data.product.Category.id
 })
+
 
 
 const onFileChange = (event) => {
@@ -251,5 +254,4 @@ form.was-validated .form-input:invalid~.invalid-text,
 form.was-validated .form-input:valid~.valid-text {
   display: initial;
 }
-
 </style>
