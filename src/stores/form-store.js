@@ -14,6 +14,8 @@ export const useFormStore = defineStore('form-store', {
     role: 'buyer',
     email: '',
     phone: '',
+    category: '',
+    defautCategory: ''
   }),
   getters: {
   },

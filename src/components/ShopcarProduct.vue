@@ -9,6 +9,7 @@
     </div>
     <div class="userData-wrapper">
       <div class="product-name">商品名稱: {{ item.Product?.name }}</div>
+      <div class="product-name">商品分類: {{ item.Product?.Category.name }}</div>
       <div class="shopcar-num">購買數量: <span>{{ item.quantity }}</span></div>
       <div class="shopcar-price" >累加金額: <span>$ {{ item.quantity * item.Product?.price }}</span></div>
     </div>
@@ -103,7 +104,6 @@ const toDetailProduct = (product_id) => {
 .userData-wrapper {
   display: grid;
   grid-template-columns: 1fr;
-  grid-template-rows: 1fr 1fr 1fr;
   grid-gap: 5px;
   padding: 40px;
   font-size: 18px;
