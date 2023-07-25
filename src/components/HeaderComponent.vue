@@ -27,13 +27,11 @@
 
 <script setup>
 import { onMounted, ref } from 'vue'
-import { useRouter } from 'vue-router'
 import { useLoginStore } from '../stores/login'
 import { useMessageStore } from '../stores/message'
 import tokenHelpers from '../../helpers/token-helpers'
 import axiosHelper from '../../helpers/axios-helper'
 import ButtonComponent from './ButtonComponent.vue'
-const router = useRouter()
 const storeLogin = useLoginStore()
 const storeMessage = useMessageStore()
 
@@ -91,7 +89,12 @@ const clickHandler = () => {
   if (msg.value === 'logout') {
     storeMessage.setSuccess('登出成功')
     localStorage.removeItem("token")
-    router.push('/user/login')
+    storeLogin.setisBuyer(false)
+    storeLogin.setisSeller(false)
+    storeLogin.setButtonOn(false)
+    storeLogin.setIsUser(false)
+    storeLogin.user = ''
+    msg.value = 'login'
   }
 }
 
