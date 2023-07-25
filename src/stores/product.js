@@ -4,6 +4,7 @@ export const productStore = defineStore('product', {
   state: () => ({
     products: [],
     product: {},
+    categories: {},
     totalAmount: 0
   }),
   getters: {
@@ -39,6 +40,10 @@ export const productStore = defineStore('product', {
     },
     productCheckout() {
       this.products = []
+    },
+    filterCategories(category) {
+      const filterCategories = this.categories.filter(cate => cate.id !== category.id)
+      this.categories = filterCategories
     }
   }
 })

@@ -4,12 +4,14 @@
     <AlertComponent></AlertComponent>
     <div class="product-wrapper">
       <div class="product-head">
-        <div class="product-img" :style="`background-image: url('${storeProduct.product.avatar}')`">
-        </div>
+        <div class="product-img" :style="`background-image: url('${storeProduct.product.avatar}')`"></div>
         <div class="product-text">
           <div class="product-name">商品名稱: <span class="text-span">{{ storeProduct.product.name }}</span></div>
-          <div class="seller" @click="toSellerProfile(storeProduct.product.User?.id)">商家資訊: <span class="text-seller">{{ storeProduct.product.User?.name }}</span></div>
-          <div class="product-inventory">商品存貨量: <span class="text-span">{{ storeProduct.product.inventory_quantity }}</span>
+          <div class="seller" @click="toSellerProfile(storeProduct.product.User?.id)">商家資訊: <span class="text-seller">{{
+            storeProduct.product.User?.name }}</span></div>
+          <div class="product-inventory">商品存貨量: <span class="text-span">{{
+            storeProduct.product.inventory_quantity }}</span></div>
+          <div class="product-inventory">商品分類: <span class="text-span">{{ storeProduct.product.Category?.name }}</span>
           </div>
           <div class="price"> 商品售價: <span class="text-price">$ {{ storeProduct.product.price }}</span></div>
         </div>
@@ -106,7 +108,6 @@ const goBack = () => {
 .product-wrapper {
   display: grid;
   grid-template-columns: 1fr;
-  grid-template-rows: 4fr 1.2fr 0.5fr;
   grid-gap: 5px;
   height: auto;
   max-height: 1000px;
@@ -125,6 +126,7 @@ const goBack = () => {
   grid-template-columns: 1fr 1fr;
   grid-template-rows: 1fr;
   grid-gap: 20px;
+  padding-bottom: 20px;
   align-items: center;
 }
 
@@ -139,14 +141,14 @@ const goBack = () => {
 .product-text {
   display: grid;
   grid-template-columns: 1fr;
-  grid-template-rows: 1fr 1fr 1fr 1fr;
-  grid-gap: 5px;
-  padding: 100px 50px 100px 0px;
+  grid-gap: 20px;
+  padding: 50px 50px 50px 0px;
   font-size: 15px;
   color: #5B5B5B;
 }
 
-.text-span, .text-seller {
+.text-span,
+.text-seller {
   font-size: 18px;
   padding-left: 20px;
 }

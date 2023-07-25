@@ -10,8 +10,10 @@
     <div class="userData-wrapper">
       <div class="product-name">商品名稱: {{ item.name }}</div>
       <div class="product-description">商品描述: {{ item.description }}</div>
+      <div class="product-description">商品分類: {{ item.Category?.name }}</div>
       <div class="delete-button">
-        <i v-if="storeLogin.isSelfUser" class="fa-solid fa-trash delete" product-id="item.product_id" @click="deleteShop(item.id)"></i>
+        <i v-if="storeLogin.isSelfUser" class="fa-solid fa-trash delete" product-id="item.product_id"
+          @click="deleteShop(item.id)"></i>
         <i v-if="storeLogin.isSelfUser" class="fa-solid fa-pen edit" @click="toEditProduct(item.id)"></i>
         <span class="add-time">上架時間: {{ item.addShopTime }}</span>
       </div>
@@ -114,7 +116,6 @@ const toEditProduct = (product_id) => {
 .userData-wrapper {
   display: grid;
   grid-template-columns: 1fr;
-  grid-template-rows: 1fr 1fr 1fr;
   grid-gap: 5px;
   align-items: center;
   justify-items: flex-start;
@@ -126,6 +127,7 @@ const toEditProduct = (product_id) => {
   cursor: pointer;
   color: #FF8F59;
 }
+
 .delete:hover {
   color: red;
 }
@@ -135,6 +137,7 @@ const toEditProduct = (product_id) => {
   margin-left: 20px;
   color: #84C1FF;
 }
+
 .edit:hover {
   color: #004B97;
 }
@@ -153,6 +156,4 @@ const toEditProduct = (product_id) => {
   bottom: 10px;
   right: 10px;
 }
-
-
 </style>

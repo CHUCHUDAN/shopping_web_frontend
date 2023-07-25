@@ -7,19 +7,30 @@
         <AlertComponent></AlertComponent>
       </div>
       <form @submit.prevent="addShop" :class="formClass" novalidate>
-        <FormComponent  label-for="name" label-text="商品名稱" span-text="※填寫1-100字商品名稱" input-placeholder="請輸入商品名稱"
+        <FormComponent label-for="name" label-text="商品名稱" span-text="※填寫1-100字商品名稱" input-placeholder="請輸入商品名稱"
           input-type="text" min-length="1" max-length="100" inputRequired="true" invalid-text="此項目為必填，字數限制1-100">
         </FormComponent>
-        <FormComponent  label-for="price" label-text="售價" span-text="※注意售價為必填" input-placeholder="請輸入售價"
-          input-type="number"  inputRequired="true" invalid-text='此項目為必填'>
-        </FormComponent>
-        <FormComponent  label-for="inventory" label-text="存貨量" span-text="※注意存貨量為必填" input-placeholder="請輸入存貨量"
+        <FormComponent label-for="price" label-text="售價" span-text="※注意售價為必填" input-placeholder="請輸入售價"
           input-type="number" inputRequired="true" invalid-text='此項目為必填'>
         </FormComponent>
-        <FormComponent  label-for="avatar" label-text="商品圖片" span-text="※注意商品圖片為必填" input-placeholder="" @change="onFileChange"
-          input-type="file" inputRequired="true" invalid-text='此項目為必填'>
+        <div class="form-item">
+          <label for="category" class="form-label">商品分類</label>
+          <span class="form-text">※注意商品分類為必填</span>
+          <select class="form-input" @input="inputSend"  name="category" id="category" required>
+            <option class="form-input" value="" disabled selected>商品分類</option>
+            <option class="form-input" :value="item.id" v-for="(item) in storeProduct.categories" v-bind:key="item.id">{{ item.name }}
+            </option>
+          </select>
+          <div class="invalid-text">此項目為必選，請選擇商品分類</div>
+          <div class="valid-text">{{ '&#10003;' }}</div>
+        </div>
+        <FormComponent label-for="inventory" label-text="存貨量" span-text="※注意存貨量為必填" input-placeholder="請輸入存貨量"
+          input-type="number" inputRequired="true" invalid-text='此項目為必填'>
         </FormComponent>
-        <FormComponent  label-for="description" label-text="商品描述" span-text="※注意商品描述為必填" input-placeholder="請輸入商品描述"
+        <FormComponent label-for="avatar" label-text="商品圖片" span-text="※注意商品圖片為必填" input-placeholder=""
+          @change="onFileChange" input-type="file" inputRequired="true" invalid-text='此項目為必填'>
+        </FormComponent>
+        <FormComponent label-for="description" label-text="商品描述" span-text="※注意商品描述為必填" input-placeholder="請輸入商品描述"
           input-type="textarea" min-length="1" max-length="400" inputRequired="true" invalid-text='此項目為必填'>
         </FormComponent>
         <div>
@@ -40,6 +51,7 @@ import { useRouter } from 'vue-router'
 import { useMessageStore } from '../stores/message'
 import { useFormStore } from '../stores/form-store'
 import { useLoginStore } from '../stores/login'
+import { productStore } from '../stores/product'
 import ButtonComponent from '../components/ButtonComponent.vue'
 import FormComponent from '../components/FormComponent.vue'
 import AlertComponent from '../components/AlertComponent.vue'
@@ -49,6 +61,7 @@ const router = useRouter()
 const storeMessage = useMessageStore()
 const storeForm = useFormStore()
 const storeLogin = useLoginStore()
+const storeProduct = productStore()
 
 {
   ButtonComponent
@@ -74,6 +87,18 @@ onMounted(() => {
   if (storeLogin.user.role !== 'seller') return router.push('/')
 })
 
+// 取得所有商品分類api
+onMounted(async () => {
+
+  const res = await axiosHelper.GET('/api/v1/products/categories')
+  const { data, success, message } = res.data
+
+  // api失敗
+  if (!success) return storeMessage.setError(message)
+  // api成功
+  return storeProduct.categories = data.categories
+})
+
 const onFileChange = (event) => {
   // 获取选择的文件
   const selectedFile = event.target.files[0]
@@ -96,7 +121,8 @@ const addShop = async (e) => {
     price: storeForm.price,
     inventory: storeForm.inventory,
     avatar: storeForm.avatar,
-    description: storeForm.description
+    description: storeForm.description,
+    category: storeForm.category
   }, token)
   const { success, message } = res.data
 
@@ -108,6 +134,12 @@ const addShop = async (e) => {
   storeMessage.setSuccess(message)
 
   router.push('/stores')
+}
+
+const inputSend = (e) => {
+  const value = e.target.value
+  const propName = e.target.id
+  storeForm.setChangeInput(propName, value)
 }
 
 
@@ -138,5 +170,61 @@ form {
   grid-template-columns: 1fr;
   grid-template-rows: repeat(2, 100px) 1fr;
   grid-gap: 20px;
+}
+
+.form-item {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: 30px 30px 2fr 1fr;
+}
+
+.form-label {
+  color: #BEBEBE;
+}
+
+
+.form-input,
+.form-input:focus {
+  font-size: 10px;
+  background-color: #F0F0F0;
+  border: none;
+  border-bottom: 1px solid #6C6C6C;
+  outline: none;
+}
+
+.form-label,
+.form-input,
+.form-text {
+  margin: 0;
+}
+
+.valid-text,
+.invalid-text {
+  display: none;
+  font-size: 10px;
+  padding: 5px;
+}
+
+/* 驗證樣式 */
+
+.valid-text {
+  color: green;
+}
+
+.invalid-text {
+  color: red;
+}
+
+form.was-validated .form-input:invalid {
+  border-bottom: 2px solid red;
+}
+
+form.was-validated .form-input:valid {
+  border-bottom: 2px solid green;
+}
+
+form.was-validated .form-input:invalid~.invalid-text,
+form.was-validated .form-input:valid~.valid-text {
+  display: initial;
 }
 </style>
