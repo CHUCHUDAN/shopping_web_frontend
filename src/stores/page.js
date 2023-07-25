@@ -16,12 +16,13 @@ export const usePageStore = defineStore('page', {
     min: '',
     max: '',
     minQuantity: '',
-    maxQuantity: ''
+    maxQuantity: '',
+    categoryId: '',
   }),
   getters: {
   },
   actions: {
-    async getProducts(page) {
+    async getProducts(page, categoryId) {
 
       // 取得所有商品api
       const res = await axiosHelper.GET('api/v1/products', {
@@ -31,7 +32,8 @@ export const usePageStore = defineStore('page', {
           max: this.max,
           minQuantity: this.minQuantity,
           maxQuantity: this.maxQuantity,
-          page: page
+          page: page,
+          category_id: categoryId
         }
       })
       const { success, message, data } = res.data
@@ -56,7 +58,10 @@ export const usePageStore = defineStore('page', {
       this.max = ''
       this.minQuantity = ''
       this.maxQuantity = ''
-      this.getProducts(1)
+      this.getProducts(1, this.categoryId)
+    },
+    categorySet(categoryId) {
+      this.categoryId = categoryId
     }
   }
 })

@@ -6,27 +6,27 @@
       <form action="" class="form-wrapper">
         <div class="form-item">
           <input class="form-input" type="text" maxlength="50" id="keyword" name="keyword" :value="storePage.keyword"
-            @input="inputSend" @keyup="storePage.getProducts(1)" placeholder="輸入關鍵字">
+            @input="inputSend" @keyup="storePage.getProducts(1, storePage.categoryId)" placeholder="輸入關鍵字">
         </div>
         <div class="form-item">
           <input class="form-input" type="number" maxlength="50" id="minQuantity" name="minQuantity"
-            :value="storePage.minQuantity" @input="inputSend" @keyup="storePage.getProducts(1)" placeholder="輸入最小存貨量">
+            :value="storePage.minQuantity" @input="inputSend" @keyup="storePage.getProducts(1, storePage.categoryId)" placeholder="輸入最小存貨量">
         </div>
         <div class="form-item">
           <input class="form-input" type="number" maxlength="50" id="maxQuantity" name="maxQuantity"
-            :value="storePage.maxQuantity" @input="inputSend" @keyup="storePage.getProducts(1)" placeholder="輸入最大存貨量">
+            :value="storePage.maxQuantity" @input="inputSend" @keyup="storePage.getProducts(1, storePage.categoryId)" placeholder="輸入最大存貨量">
         </div>
         <div class="form-item">
           <input class="form-input" type="number" maxlength="50" id="min" name="min" :value="storePage.min"
-            @input="inputSend" @keyup="storePage.getProducts(1)" placeholder="輸入最小金額">
+            @input="inputSend" @keyup="storePage.getProducts(1, storePage.categoryId)" placeholder="輸入最小金額">
         </div>
         <div class="form-item">
           <input class="form-input" type="number" maxlength="50" id="max" name="max" :value="storePage.max"
-            @input="inputSend" @keyup="storePage.getProducts(1)" placeholder="輸入最大金額">
+            @input="inputSend" @keyup="storePage.getProducts(1, storePage.categoryId)" placeholder="輸入最大金額">
         </div>
         <div class="button-wrapper">
           <ButtonComponent class="search-button" msg="搜尋" backgroundColor="background-color:#D0D0D0" type="button"
-            @click="storePage.getProducts(1)">
+            @click="storePage.getProducts(1, storePage.categoryId)">
           </ButtonComponent>
           <ButtonComponent class="clear-button" msg="清除" backgroundColor="background-color:	#FFAD86" type="button"
             @click="storePage.clearSearch()">
@@ -70,7 +70,7 @@ const storePage = usePageStore()
 storeMessage.clearErrorMessages()
 
 // 取出所有商品 api
-storePage.getProducts(1)
+storePage.getProducts(1, storePage.categoryId)
 
 const inputSend = (e) => {
   const value = e.target.value
