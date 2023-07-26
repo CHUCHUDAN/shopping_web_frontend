@@ -6,7 +6,9 @@
       <router-link to="/home" class="link-to-home" v-for="(item) in storeProduct.categories" v-bind:key="item.id"
         @click="storePage.categorySet(item.id)">
         <div class="category-item">
-          <div class="category-img" :style="`background-image: url('${item.avatar}')`"></div>
+          <div class="category-img"
+            :style="`background-image: url('${item.avatar}')`">
+          </div>
           <div class="category-text">{{ item.name }}</div>
         </div>
       </router-link>
@@ -98,8 +100,9 @@ onMounted(async () => {
 }
 
 .category-item:hover {
-  border: 1px solid #BEBEBE;
+  border: 3px solid #BEBEBE;
   cursor: pointer;
+  opacity: 0.5;
   /* 陰影 */
   -webkit-box-shadow: 2px 6px 27px 6px rgba(0, 0, 0, 0.1);
   -moz-box-shadow: 2px 6px 27px 6px rgba(0, 0, 0, 0.1);
@@ -110,7 +113,6 @@ onMounted(async () => {
   background-position: center center;
   background-size: cover;
   background-repeat: no-repeat;
-  background-color: #8E8E8E;
 }
 
 .category-text {
