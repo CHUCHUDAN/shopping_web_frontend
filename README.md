@@ -1,18 +1,20 @@
-shopping_web網站
+Shopping_web前端網站
 ====
 使用Vue3 + Vite的購物網站
 
 專案畫面
 ---
-![image](https://github.com/CHUCHUDAN/expense-tracker/blob/main/public/img/login.png)
+![image](https://github.com/CHUCHUDAN/shopping_web_frontend/blob/main/public/home.png)
 -------
-![image](https://github.com/CHUCHUDAN/expense-tracker/blob/main/public/img/register.png)
+![image](https://github.com/CHUCHUDAN/shopping_web_frontend/blob/main/public/login.png)
 -------
-![image](https://github.com/CHUCHUDAN/expense-tracker/blob/main/public/img/index.png)
+![image](https://github.com/CHUCHUDAN/shopping_web_frontend/blob/main/public/products.png)
 -------
-![image](https://github.com/CHUCHUDAN/expense-tracker/blob/main/public/img/new.png)
+![image](https://github.com/CHUCHUDAN/shopping_web_frontend/blob/main/public/profile.png)
 -------
-![image](https://github.com/CHUCHUDAN/expense-tracker/blob/main/public/img/edit.png)
+![image](https://github.com/CHUCHUDAN/shopping_web_frontend/blob/main/public/shopcar.png)
+-------
+![image](https://github.com/CHUCHUDAN/shopping_web_frontend/blob/main/public/store.png)
 -------
 Features - 產品功能(以下功能皆需要相應的後端api)
 -----
