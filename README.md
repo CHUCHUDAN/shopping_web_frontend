@@ -61,7 +61,7 @@ Installing - 專案安裝流程
 
 8.編譯專案
 
-   在 Terminal 輸入 npm run build 指令
+    在 Terminal 輸入 npm run build 指令
 
     
 Contributor - 專案開發人員
