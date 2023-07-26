@@ -1,35 +1,67 @@
-# shopping_web_frontend
+shopping_web網站
+====
+使用Vue3 + Vite的購物網站
 
-This template should help get you started developing with Vue 3 in Vite.
+專案畫面
+---
+![image](https://github.com/CHUCHUDAN/expense-tracker/blob/main/public/img/login.png)
+-------
+![image](https://github.com/CHUCHUDAN/expense-tracker/blob/main/public/img/register.png)
+-------
+![image](https://github.com/CHUCHUDAN/expense-tracker/blob/main/public/img/index.png)
+-------
+![image](https://github.com/CHUCHUDAN/expense-tracker/blob/main/public/img/new.png)
+-------
+![image](https://github.com/CHUCHUDAN/expense-tracker/blob/main/public/img/edit.png)
+-------
+Features - 產品功能(以下功能皆需要相應的後端api)
+-----
+1.使用者可以登入、登出、註冊帳號。
 
-## Recommended IDE Setup
+2.使用者可以使用購物車功能。
 
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur) + [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin).
+3.使用者可以使用商家功能。
 
-## Customize configuration
+4.使用者可以瀏覽商品頁面。
 
-See [Vite Configuration Reference](https://vitejs.dev/config/).
+5.使用者可以篩選商品。
 
-## Project Setup
+Environment SetUp - 環境建置
+-----
+1. [vue.js](https://cn.vuejs.org/guide/introduction.html)
+2. [vite](https://vitejs.dev/)
 
-```sh
-npm install
-```
+Installing - 專案安裝流程
+----
+1.打開你的 terminal，Clone 此專案至本機電腦
 
-### Compile and Hot-Reload for Development
+    git clone https://github.com/CHUCHUDAN/shopping_web_frontend.git
+    
+2.開啟終端機(Terminal)，進入存放此專案的資料夾
 
-```sh
-npm run dev
-```
+    cd shopping_web_frontend
+    
+3.安裝相關套件
 
-### Compile and Minify for Production
+    在 Terminal 輸入 npm install 指令
+        
+4.請自行新增.env檔案放置與檔案相關的敏感資訊可參考.env.example檔案內容
 
-```sh
-npm run build
-```
+    VITE_APP_API=你串接的後端網域
+    
+6.啟動伺服器
+  
+    在 Terminal 輸入 npm run dev 指令
+    
+7.當 terminal 出現以下字樣，表示伺服器啟動成功
 
-### Lint with [ESLint](https://eslint.org/)
+    Local: http://localhost:5173/shopping_web_frontend/
 
-```sh
-npm run lint
-```
+8.編譯專案
+
+   在 Terminal 輸入 npm run build 指令
+
+    
+Contributor - 專案開發人員
+-----
+[Daniel Chu](https://github.com/CHUCHUDAN)
