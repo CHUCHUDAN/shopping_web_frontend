@@ -1,1 +1,0 @@
-import{q as t}from"./index-d726125b.js";const s=t("form-store",{state:()=>({name:"",price:0,inventory:0,avatar:"",description:"",account:"",password:"",passwordCheck:"",passwordOld:"",role:"buyer",email:"",phone:"",category:"",defautCategory:""}),getters:{},actions:{setChangeInput(e,o){this[e]=o}}});export{s as u};
