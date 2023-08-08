@@ -6,7 +6,7 @@
         <h3>Register</h3>
         <AlertComponent></AlertComponent>
       </div>
-      <form @submit.prevent="register" :class="formClass" novalidate>
+      <form @submit.prevent="register" :class="storeForm.formClass" novalidate>
         <FormComponent label-for="name" label-text="使用者名稱" span-text="※填寫20內使用者名稱" input-placeholder="請輸入名稱"
           input-type="text" min-length="1" max-length="20" inputRequired="true" invalid-text="此項目為必填，字數限制1-20">
         </FormComponent>
@@ -21,11 +21,13 @@
           <div class="form-radio-wrapper">
             <div class="form-radio">
               <label class="form-radio-label" for="buyer">買家</label>
-              <input class="form-radio-input" type="radio" id="buyer" name="role" value="buyer" v-model="storeForm.role" checked>
+              <input class="form-radio-input" type="radio" id="buyer" name="role" value="buyer" v-model="storeForm.role"
+                checked>
             </div>
             <div class="form-radio">
               <label class="form-radio-label" for="seller">賣家</label>
-              <input class="form-radio-input" type="radio" id="seller" name="role" value="seller" v-model="storeForm.role">
+              <input class="form-radio-input" type="radio" id="seller" name="role" value="seller"
+                v-model="storeForm.role">
             </div>
           </div>
         </div>
@@ -40,7 +42,7 @@
         </FormComponent>
 
         <div>
-          <ButtonComponent msg="register" backgroundColor="background-color:#FFBD9D" type="submit" @click="addFormClass">
+          <ButtonComponent msg="register" backgroundColor="background-color:#FFBD9D" type="submit" @click="storeForm.addFormClass()">
           </ButtonComponent>
         </div>
         <div class="register-text">
@@ -54,20 +56,22 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
-import axiosHelper from '../../helpers/axios-helper'
-import tokenHelpers from '../../helpers/token-helpers'
+
+import { onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useMessageStore } from '../stores/message'
 import { useFormStore } from '../stores/form-store'
+import { useLoginStore } from '../stores/login'
 import ButtonComponent from '../components/ButtonComponent.vue'
 import FormComponent from '../components/FormComponent.vue'
 import AlertComponent from '../components/AlertComponent.vue'
 import HeaderComponent from '../components/HeaderComponent.vue'
 import FooterComponent from '../components/FooterComponent.vue'
+
 const router = useRouter()
 const storeMessage = useMessageStore()
 const storeForm = useFormStore()
+const storeLogin = useLoginStore()
 
 {
   ButtonComponent
@@ -78,60 +82,31 @@ const storeForm = useFormStore()
 }
 
 // message初始化
-storeMessage.clearErrorMessages()
+storeMessage.messageInitialization()
 
-
-
-// 表單樣式
-const formClass = ref('')
-
-const addFormClass = () => {
-  formClass.value = 'was-validated'
-}
+// 登入狀態下會被導回首頁
+onMounted(async () => {
+  if (storeLogin.isUser) {
+    router.push('/')
+  }
+  
+  // 表單樣式重置
+  storeForm.formClass = ''
+})
 
 // 註冊功能
-
 const register = async (e) => {
-
   const form = e.target
+
+  window.scrollTo({ top: 0, behavior: 'smooth' })
 
   // 表單驗證不過
   if (!form.checkValidity()) return e.preventDefault()
 
-
-  const res = await axiosHelper.POST('/api/v1/user', {
-    name: storeForm.name,
-    account: storeForm.account,
-    role: storeForm.role,
-    password: storeForm.password,
-    passwordCheck: storeForm.passwordCheck
-  })
-  const { success, message } = res.data
-
-  // 註冊失敗
-  if (!success) {
-    return storeMessage.setError(message)
-  }
-
-  storeMessage.setSuccess('註冊成功')
-
+  const registerResult = await storeLogin.register()
+  if (registerResult) return
   router.push('/user/login')
 }
-
-onMounted(async () => {
-
-  // 如果已登入就導回首頁
-  // 將token放進header中發送驗證
-
-  const res = await tokenHelpers.tokenCheck()
-  const { success } = res.data
-
-  // api成功
-  if (success) return router.push('/')
-
-
-})
-
 
 </script>
 

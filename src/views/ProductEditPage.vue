@@ -6,7 +6,7 @@
         <h3>編輯商品</h3>
         <AlertComponent></AlertComponent>
       </div>
-      <form @submit.prevent="editShop" :class="formClass" novalidate>
+      <form @submit.prevent="putStore" :class="storeForm.formClass" novalidate>
         <FormComponent label-for="name" label-text="商品名稱" span-text="※填寫1-100字商品名稱" input-placeholder="請輸入商品名稱"
           input-type="text" min-length="1" max-length="100" inputRequired="true" invalid-text="此項目為必填，字數限制1-100"
           :value="storeForm.name">
@@ -17,10 +17,8 @@
         <div class="form-item">
           <label for="category" class="form-label">商品分類</label>
           <span class="form-text">※注意商品分類為必填</span>
-          <select class="form-input" @input="inputSend" name="category" id="category" required>
-            <option class="form-input" :value="storeForm.defautCategory?.id" selected>{{ storeForm.defautCategory?.name }}
-            </option>
-            <option class="form-input" :value="item.id" v-for="(item) in storeProduct.categories" v-bind:key="item.id">{{
+          <select class="form-input" v-model="storeForm.category" name="category" id="category" required>
+            <option class="form-input" :value="item.id" v-for="(item) in storeStore.categories" v-bind:key="item.id">{{
               item.name }}
             </option>
           </select>
@@ -38,7 +36,8 @@
           :value="storeForm.description">
         </FormComponent>
         <div>
-          <ButtonComponent msg="更新" backgroundColor="background-color:#FFBD9D" type="submit" @click="addFormClass">
+          <ButtonComponent msg="更新" backgroundColor="background-color:#FFBD9D" type="submit"
+            @click="storeForm.addFormClass()">
           </ButtonComponent>
         </div>
       </form>
@@ -48,25 +47,25 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
-import axiosHelper from '../../helpers/axios-helper'
-import tokenHelpers from '../../helpers/token-helpers'
+
+import { onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useMessageStore } from '../stores/message'
 import { useFormStore } from '../stores/form-store'
 import { useLoginStore } from '../stores/login'
-import { productStore } from '../stores/product'
+import { useStore } from '../stores/store-product'
 import ButtonComponent from '../components/ButtonComponent.vue'
 import FormComponent from '../components/FormComponent.vue'
 import AlertComponent from '../components/AlertComponent.vue'
 import HeaderComponent from '../components/HeaderComponent.vue'
 import FooterComponent from '../components/FooterComponent.vue'
+
 const route = useRoute()
 const router = useRouter()
 const storeMessage = useMessageStore()
 const storeForm = useFormStore()
 const storeLogin = useLoginStore()
-const storeProduct = productStore()
+const storeStore = useStore()
 
 {
   ButtonComponent
@@ -77,99 +76,40 @@ const storeProduct = productStore()
 }
 
 // message初始化
-storeMessage.clearErrorMessages()
-storeMessage.clearSuccessMessages()
-
-// 表單樣式
-const formClass = ref('')
-
-const addFormClass = () => {
-  formClass.value = 'was-validated'
-}
+storeMessage.messageInitialization()
 
 // 檢查是否為seller
 onMounted(() => {
   if (storeLogin.user.role !== 'seller') return router.push('/')
+
+  // 表單樣式重置
+  storeForm.formClass = ''
 })
 
-// 取得所有商品分類api &&  顯示單一商品api
-
+// 取得所有商品分類 && 顯示單一商品api
 onMounted(async () => {
   const productId = route.params.product_id
-
-  // 使用 Promise.all 同時取得兩個 API 的回應
-  const [categoriesRes, productDetailsRes] = await Promise.all([
-    axiosHelper.GET('/api/v1/products/categories'),
-    axiosHelper.GET(`/api/v1/products/${productId}`)
-  ])
-
-  const categoriesData = categoriesRes.data
-  const productDetailsData = productDetailsRes.data
-
-
-  // api失敗
-  if (!categoriesData.success || !productDetailsData.success) {
-    return storeMessage.setError(categoriesData.message || productDetailsData.message)
-  }
-
-  // api 成功
-  storeProduct.categories = categoriesData.data.categories
-  storeProduct.filterCategories(productDetailsData.data.product.Category)
-
-  storeForm.name = productDetailsData.data.product.name
-  storeForm.price = productDetailsData.data.product.price
-  storeForm.inventory = productDetailsData.data.product.inventory_quantity
-  storeForm.avatar = productDetailsData.data.product.avatar
-  storeForm.description = productDetailsData.data.product.description
-  storeForm.defautCategory = productDetailsData.data.product.Category
-  storeForm.category = productDetailsData.data.product.Category.id
+  await storeStore.getCategoriesProduct(productId)
 })
 
-
-
-const onFileChange = (event) => {
-  // 获取选择的文件
-  const selectedFile = event.target.files[0]
-  storeForm.avatar = selectedFile
-}
-
 // 編輯商品api
-
-const editShop = async (e) => {
-
+const putStore = async (e) => {
   const form = e.target
+  const productId = route.params.product_id
 
   // 表單驗證不過
   if (!form.checkValidity()) return e.preventDefault()
-
-  const token = tokenHelpers.putTokenToHeader()
-
-  const res = await axiosHelper.formDataPUT(`/api/v1/stores/${route.params.product_id}`, {
-    name: storeForm.name,
-    price: storeForm.price,
-    inventory: storeForm.inventory,
-    avatar: storeForm.avatar,
-    description: storeForm.description,
-    category: storeForm.category
-  }, token)
-  const { success, message } = res.data
-
-  // api失敗
-  if (!success) {
-    return storeMessage.setError(message)
-  }
-  // api成功
-  storeMessage.setSuccess(message)
+  const putStore = await storeStore.putStore(productId)
+  if (putStore) return 
 
   router.push('/stores')
 }
 
-const inputSend = (e) => {
-  const value = e.target.value
-  const propName = e.target.id
-  storeForm.setChangeInput(propName, value)
+// 獲取選擇的文件
+const onFileChange = (event) => {
+  const selectedFile = event.target.files[0]
+  storeForm.avatar = selectedFile
 }
-
 
 </script>
 

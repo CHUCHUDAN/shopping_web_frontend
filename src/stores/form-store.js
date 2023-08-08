@@ -3,8 +3,8 @@ import { defineStore } from 'pinia'
 export const useFormStore = defineStore('form-store', {
   state: () => ({
     name: '',
-    price: 0,
-    inventory: 0,
+    price: '',
+    inventory: '',
     avatar: '',
     description: '',
     account: '',
@@ -15,13 +15,23 @@ export const useFormStore = defineStore('form-store', {
     email: '',
     phone: '',
     category: '',
-    defautCategory: ''
+    defautCategory: '',
+    // 表單樣式
+    formClass: '',
   }),
   getters: {
   },
   actions: {
+
+    // 更新input資料
     setChangeInput(property, value) {
       this[property] = value
+    },
+
+    // 插入表單樣式
+    addFormClass(){
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+      this.formClass = 'was-validated'
     }
   }
 })

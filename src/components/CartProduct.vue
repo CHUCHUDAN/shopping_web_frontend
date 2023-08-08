@@ -1,68 +1,47 @@
 <template>
-  <div class="product-wrapper"  v-for="(item) in storeProduct.products" v-bind:key="item.id">
+  <div class="product-wrapper"  v-for="(item) in storeCart.products" v-bind:key="item.id">
     <div class="data-wrapper">
-      <div class="product-pic" :style="`background-image: url('${item.Product?.avatar}')`" @click="toDetailProduct(item.product_id)"></div>
+      <div class="product-pic" :style="`background-image: url('${item.Product.avatar}')`" @click="toDetailProduct(item.Product.id)"></div>
       <div class="product-data">
-        <div class="product-price">售價: $ {{ item.Product?.price }}</div>
-        <div class="product-num">存貨量: {{ item.Product?.inventory_quantity }}</div>
+        <div class="product-price">售價: $ {{ item.Product.price }}</div>
+        <div class="product-num">存貨量: {{ item.Product.stock }}</div>
       </div>
     </div>
     <div class="userData-wrapper">
-      <div class="product-name">商品名稱: {{ item.Product?.name }}</div>
-      <div class="product-name">商品分類: {{ item.Product?.Category.name }}</div>
+      <div class="product-name">商品名稱: {{ item.Product.name }}</div>
+      <div class="product-name">商品分類: {{ item.Product.Category.name }}</div>
       <div class="shopcar-num">購買數量: <span>{{ item.quantity }}</span></div>
-      <div class="shopcar-price" >累加金額: <span>$ {{ item.quantity * item.Product?.price }}</span></div>
+      <div class="shopcar-price" >累加金額: <span>$ {{ item.quantity * item.Product.price }}</span></div>
     </div>
     <div class="use-wrapper">
       <div class="control-button">
-        <i class="fa-solid fa-circle-plus plus" @click="storeProduct.setProductQuantity('plus', item.id)"></i>
-        <i class="fa-solid fa-circle-minus minus" @click="storeProduct.setProductQuantity('minus', item.id)"></i>
+        <i class="fa-solid fa-circle-plus plus" @click="storeCart.setProductQuantity('plus', item.Product.id)"></i>
+        <i class="fa-solid fa-circle-minus minus" @click="storeCart.setProductQuantity('minus', item.Product.id)"></i>
       </div>
       <div class="delete-button">
-        <i class="fa-solid fa-trash delete"  product-id="item.product_id" @click="deleteShop(item.product_id)"></i>
+        <i class="fa-solid fa-trash delete"  product-id="item.product_id" @click="storeCart.deleteCart(item.Product.id)"></i>
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import tokenHelpers from '../../helpers/token-helpers'
-import { productStore } from '../stores/product'
-import { useMessageStore } from '../stores/message'
-import axiosHelper from '../../helpers/axios-helper'
-import ButtonComponent from './ButtonComponent.vue'
+
+import { onMounted } from 'vue'
+import { useCartStore } from '../stores/cart-product'
 import router from '../router'
-const storeProduct = productStore()
-const storeMessage = useMessageStore()
 
-{
-  ButtonComponent
-}
+const storeCart = useCartStore()
 
-
-
-// 刪除購物車商品api
-const deleteShop = async (productId) => {
-
-  window.scrollTo({ top: 0, behavior: 'smooth' })
-  const token = tokenHelpers.putTokenToHeader()
-  const res = await axiosHelper.DELETE(`/api/v1/shopcars/${productId}`,undefined, token)
-  const { success, message } = res.data
-  
-  // api失敗
-  if (!success) return storeMessage.setError(message)
-
-  // api成功
-  storeProduct.deleteProducts(productId)
-  storeProduct.totalAmountCount()
-  return storeMessage.setSuccess(message)
-}
+// 取得購物車所有商品api
+onMounted(async () => {
+  await storeCart.getCart()
+})
 
 // 跳轉至商品詳細頁
 const toDetailProduct = (product_id) => {
   router.push(`/product/${product_id}`)
 }
-
 
 </script>
 

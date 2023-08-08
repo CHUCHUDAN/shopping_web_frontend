@@ -1,49 +1,108 @@
 import { defineStore } from 'pinia'
+import axiosHelper from '../../helpers/axios-helper'
+import { useMessageStore } from './message'
 
-export const productStore = defineStore('product', {
+const storeMessage = useMessageStore()
+
+export const useProductStore = defineStore('product', {
   state: () => ({
+
+    // 分頁資料
+    pages: [],
+    totalPage: 0,
+    currentPage: 0,
+    prev: 0,
+    next: 0,
+
+    // 篩選資料
+    keyword: '',
+    min: '',
+    max: '',
+    minQuantity: '',
+    maxQuantity: '',
+    categoryId: '',
+
+    // 商品資料
+    categories: '',
     products: [],
-    product: {},
-    categories: {},
-    totalAmount: 0
+    product: ''
+    
   }),
   getters: {
   },
   actions: {
-    setProduct(products) {
-      this.products = products
-    },
-    setTotalAmount(num) {
-      this.totalAmount = num
-    },
-    setProductQuantity(state, id) {
-      const product = this.products.find(product => product.id === id)
-      const inventoryQuantity = product.Product.inventory_quantity
-      if (state === 'plus' && product.quantity < inventoryQuantity) product.quantity += 1
-      if (state === 'minus' && product.quantity > 1) product.quantity -= 1
-      this.totalAmountCount()
-    },
-    totalAmountCount() {
-      let total = 0
-      this.products.forEach(product => {
-        total += product.quantity * product.Product.price
+
+    // 取得所有商品api
+    async getProducts(page) {
+      const res = await axiosHelper.GET('api/v1/products', {
+        params: {
+          keyword: this.keyword,
+          min: this.min,
+          max: this.max,
+          minQuantity: this.minQuantity,
+          maxQuantity: this.maxQuantity,
+          page: page,
+          category_id: this.categoryId
+        }
       })
-      this.totalAmount = total
+      const { success, message, data } = res.data
+
+      // api失敗
+      if (!success) return storeMessage.setError(message)
+
+      // api成功
+      this.pages = data.pagination.pages
+      this.totalPage = data.pagination.totalPage
+      this.currentPage = data.pagination.currentPage
+      this.prev = data.pagination.prev
+      this.next = data.pagination.next
+      return this.products = data.products
     },
-    deleteProducts(productId) {
-      const newProduct = this.products.filter(product => product.product_id !== productId)
-      this.products = newProduct
+
+    // 取得單一商品api
+    async getProduct(productId) {
+      const res = await axiosHelper.GET(`/api/v1/products/${productId}`)
+      const { data, success, message } = res.data
+
+      // api失敗
+      if (!success) {
+        storeMessage.setError(message)
+        return 'err'
+      }
+
+      // api成功
+      this.product = data.product
     },
-    deleteStoreShop(productId) {
-      const newProduct = this.products.filter(product => product.id !== productId)
-      this.products = newProduct
+
+    // 取得分類資料api
+    async getCategories() {
+      const res = await axiosHelper.GET('/api/v1/products/categories')
+      const { data, success, message } = res.data
+
+      // api失敗
+      if (!success) return storeMessage.setError(message)
+      // api成功
+      return this.categories = data.categories
     },
-    productCheckout() {
-      this.products = []
+
+    // 更改pinia資料
+    setChangeInput(property, value) {
+      this[property] = value
     },
-    filterCategories(category) {
-      const filterCategories = this.categories.filter(cate => cate.id !== category.id)
-      this.categories = filterCategories
+
+    // 清除搜尋條件
+    clearSearch() {
+      this.keyword = ''
+      this.min = ''
+      this.max = ''
+      this.minQuantity = ''
+      this.maxQuantity = ''
+      this.getProducts(1)
+    },
+
+    // 設定categoryId
+    categorySet(categoryId) {
+      this.categoryId = categoryId
     }
   }
 })

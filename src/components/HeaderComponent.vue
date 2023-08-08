@@ -12,91 +12,35 @@
         </div>
         <div class="user-account">{{ storeLogin.user.account }}</div>
       </router-link>
-      <router-link to="/shopcars" v-if="storeLogin.isBuyer" class="shopcarPic">
+      <router-link to="/carts" v-if="storeLogin.isBuyer" class="cartPic">
         <i class="fa-solid fa-cart-shopping"></i>
       </router-link>
       <router-link to="/stores" v-if="storeLogin.isSeller" class="storePic">
         <i class="fa-solid fa-store"></i>
       </router-link>
-      <router-link to="/user/login" class="user-login-wrapper" @click="clickHandler()">
-        <ButtonComponent :msg="msg" backgroundColor="background-color:#FFBD9D"></ButtonComponent>
+      <router-link to="/user/login" class="user-login-wrapper" @click="storeLogin.logout()">
+        <ButtonComponent :msg="storeLogin.buttonText" backgroundColor="background-color:#FFBD9D"></ButtonComponent>
       </router-link>
     </div>
   </header>
 </template>
 
 <script setup>
-import { onMounted, ref } from 'vue'
-import { useLoginStore } from '../stores/login'
-import { useMessageStore } from '../stores/message'
-import tokenHelpers from '../../helpers/token-helpers'
-import axiosHelper from '../../helpers/axios-helper'
-import ButtonComponent from './ButtonComponent.vue'
-const storeLogin = useLoginStore()
-const storeMessage = useMessageStore()
 
+import { onMounted } from 'vue'
+import { useLoginStore } from '../stores/login'
+import ButtonComponent from './ButtonComponent.vue'
+
+const storeLogin = useLoginStore()
 
 {
   ButtonComponent
 }
 
-const msg = ref('')
-
-
+// 狀態管理
 onMounted(async () => {
-
-  // 將token放進header中發送驗證
-
-  const token = tokenHelpers.putTokenToHeader()
-  const res = await axiosHelper.GET('/api/v1/users', undefined, token)
-  const { success, data } = res.data
-
-
-  // api失敗
-  if (!success) {
-    storeLogin.setisBuyer(false)
-    storeLogin.setisSeller(false)
-    storeLogin.setButtonOn(false)
-    storeLogin.setIsUser(false)
-    storeLogin.user = ''
-    msg.value = 'login'
-  }
-
-  // api成功
-  if (success && data.user.role === 'buyer') {
-    // 買家
-
-    storeLogin.setisBuyer(true)
-    storeLogin.setisSeller(false)
-    storeLogin.setButtonOn(true)
-    storeLogin.setIsUser(true)
-    storeLogin.user = data.user
-    msg.value = 'logout'
-
-  } else if (success && data.user.role === 'seller') {
-    // 賣家
-
-    storeLogin.setisSeller(true)
-    storeLogin.setisBuyer(false)
-    storeLogin.setButtonOn(false)
-    storeLogin.setIsUser(true)
-    storeLogin.user = data.user
-    msg.value = 'logout'
-  }
+  await storeLogin.authority()
 })
-
-const clickHandler = () => {
-  if (msg.value === 'logout') {
-    storeMessage.setSuccess('登出成功')
-    localStorage.removeItem("token")
-    storeLogin.setisBuyer(false)
-    storeLogin.setisSeller(false)
-    storeLogin.setButtonOn(false)
-    storeLogin.setIsUser(false)
-    storeLogin.user = ''
-    msg.value = 'login'
-  }
-}
 
 </script>
 
@@ -173,7 +117,7 @@ header {
   color: #5B5B5B;
 }
 
-.shopcarPic,
+.cartPic,
 .storePic {
   padding-right: 10px;
   font-size: 25px;
@@ -181,7 +125,7 @@ header {
   color: #F0F0F0;
 }
 
-.shopcarPic:hover,
+.cartPic:hover,
 .storePic:hover {
   color: #5B5B5B
 }

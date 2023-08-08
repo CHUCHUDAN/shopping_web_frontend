@@ -4,20 +4,20 @@
     <AlertComponent></AlertComponent>
     <div class="user-wrapper">
       <div class="user-head">
-        <div class="user-img" :style="`background-image: url('${storeUser.user.avatar}')`">
+        <div class="user-img" :style="`background-image: url('${storeStore.seller.avatar}')`">
         </div>
         <div class="user-text">
-          <div class="user-name">名稱: <span class="text-span">{{ storeUser.user.name }}</span></div>
-          <div class="user-account">帳號: <span class="text-span">{{ storeUser.user.account }}</span></div>
-          <div class="user-role">帳號類型: <span class="text-span">{{ storeUser.user.role }}</span></div>
-          <div class="user-email" v-if="storeUser.user.email"> email: <span class="text-span"> {{ storeUser.user.email
+          <div class="user-name">名稱: <span class="text-span">{{ storeStore.seller.name }}</span></div>
+          <div class="user-account">帳號: <span class="text-span">{{ storeStore.seller.account }}</span></div>
+          <div class="user-role">帳號類型: <span class="text-span">{{ storeStore.seller.role }}</span></div>
+          <div class="user-email" v-if="storeStore.seller.email"> email: <span class="text-span"> {{ storeStore.seller.email
           }}</span></div>
-          <div class="user-phone" v-if="storeUser.user.phone"> phone: <span class="text-span"> {{ storeUser.user.phone
+          <div class="user-phone" v-if="storeStore.seller.phone"> phone: <span class="text-span"> {{ storeStore.seller.phone
           }}</span></div>
-          <div class="user-created-time"> 加入時間: <span class="text-span"> {{ storeUser.user.createdTimeFromNow }}</span>
+          <div class="user-created-time"> 加入時間: <span class="text-span"> {{ storeStore.seller.createdTimeFromNow }}</span>
           </div>
-          <div class="user-product-count" v-if="storeUser.user.productsCount"> 商品數量: <span class="text-span"> {{
-            storeUser.user.productsCount }}</span></div>
+          <div class="user-product-count" v-if="storeStore.seller.productsCount"> 商品數量: <span class="text-span"> {{
+            storeStore.seller.productsCount }}</span></div>
         </div>
       </div>
       <div class="user-button">
@@ -38,84 +38,48 @@
 </template>
 
 <script setup>
+
 import { onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import AlertComponent from '../components/AlertComponent.vue'
-import ButtonComponent from '../components/ButtonComponent.vue'
 import HeaderComponent from '../components/HeaderComponent.vue'
 import FooterComponent from '../components/FooterComponent.vue'
 import StoreProduct from '../components/StoreProduct.vue'
-import axiosHelper from '../../helpers/axios-helper'
-import tokenHelpers from '../../helpers/token-helpers'
-import { userStore } from '../stores/user'
 import { useLoginStore } from '../stores/login'
 import { useMessageStore } from '../stores/message'
-import { productStore } from '../stores/product'
-import router from '../router'
+import { useStore } from '../stores/store-product'
+
 const storeMessage = useMessageStore()
-const storeUser = userStore()
 const storeLogin = useLoginStore()
-const storeProduct = productStore()
+const storeStore = useStore()
 const route = useRoute()
 
 {
   AlertComponent
-  ButtonComponent
   HeaderComponent
   FooterComponent
   StoreProduct
 }
 
 // message初始化
-storeMessage.clearErrorMessages()
-storeMessage.clearSuccessMessages()
+storeMessage.messageInitialization()
 
-// 顯示商家資訊
+// 取得商家資訊api
 onMounted(async () => {
-
-  // 將token放進header中發送驗證
   const sellerId = route.params.seller_id
-  const token = tokenHelpers.putTokenToHeader()
-  const res = await axiosHelper.GET(`/api/v1/users/${sellerId}`, undefined, token)
-  const { success, data } = res.data
-
-  // api失敗
-  if (!success) {
-    router.push('/')
-  }
-
-  // api成功
-  return storeUser.user = data.seller
+  await storeStore.getSeller(sellerId)
 })
 
-// 取得商家所有商品api
+// 取得該商家所有商品api
 onMounted(async () => {
-
   const sellerId = Number(route.params.seller_id)
-  const token = tokenHelpers.putTokenToHeader()
-  const res = await axiosHelper.GET(`/api/v1/stores/${sellerId}`, undefined, token)
-  const { success, message, data } = res.data
-
-  // api失敗
-  if (!success) return storeMessage.setError(message)
-
-  // api成功
-
-  storeProduct.setProduct(data.products)
-
-  // 判斷是否是本帳號seller
-  if (sellerId !== storeLogin.user.id) {
-    return storeLogin.isSelfUser = false
-  }
-  return storeLogin.isSelfUser = true
+  await storeStore.getSellerProducts(sellerId)
 })
-
 
 // 上一頁按鈕
 const goBack = () => {
   window.history.back()
 }
-
 
 </script>
 

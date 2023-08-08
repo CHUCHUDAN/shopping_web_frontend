@@ -7,10 +7,10 @@
         <div class="product-img" :style="`background-image: url('${storeProduct.product.avatar}')`"></div>
         <div class="product-text">
           <div class="product-name">商品名稱: <span class="text-span">{{ storeProduct.product.name }}</span></div>
-          <div class="seller" @click="toSellerProfile(storeProduct.product.User?.id)">商家資訊: <span class="text-seller">{{
-            storeProduct.product.User?.name }}</span></div>
+          <div class="seller" @click="toSellerProfile(storeProduct.product.Store?.User.id)">商家資訊: <span class="text-seller">{{
+            storeProduct.product.Store?.User.name }}</span></div>
           <div class="product-inventory">商品存貨量: <span class="text-span">{{
-            storeProduct.product.inventory_quantity }}</span></div>
+            storeProduct.product.stock }}</span></div>
           <div class="product-inventory">商品分類: <span class="text-span">{{ storeProduct.product.Category?.name }}</span>
           </div>
           <div class="price"> 商品售價: <span class="text-price">$ {{ storeProduct.product.price }}</span></div>
@@ -22,8 +22,8 @@
       <div class="product-button">
         <ButtonComponent msg="上一頁" backgroundColor="background-color:#BEBEBE" @click="goBack()">
         </ButtonComponent>
-        <ButtonComponent v-if="storeLogin.buttonOn" msg="加入購物車" backgroundColor="background-color:#FF9797"
-          @click="addToShopcar(storeProduct.product.id)">
+        <ButtonComponent v-if="storeLogin.cartButtonOn" msg="加入購物車" backgroundColor="background-color:#FF9797"
+          @click="storeCart.postCart(storeProduct.product.id)">
         </ButtonComponent>
       </div>
     </div>
@@ -32,21 +32,23 @@
 </template>
 
 <script setup>
+
 import { onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import AlertComponent from '../components/AlertComponent.vue'
 import ButtonComponent from '../components/ButtonComponent.vue'
 import HeaderComponent from '../components/HeaderComponent.vue'
 import FooterComponent from '../components/FooterComponent.vue'
-import axiosHelper from '../../helpers/axios-helper'
-import tokenHelpers from '../../helpers/token-helpers'
 import { useLoginStore } from '../stores/login'
-import { productStore } from '../stores/product'
+import { useProductStore } from '../stores/product'
 import { useMessageStore } from '../stores/message'
+import { useCartStore } from '../stores/cart-product'
 import router from '../router'
+
 const storeLogin = useLoginStore()
-const storeProduct = productStore()
+const storeProduct = useProductStore()
 const storeMessage = useMessageStore()
+const storeCart = useCartStore()
 const route = useRoute()
 
 {
@@ -57,37 +59,12 @@ const route = useRoute()
 }
 
 // message初始化
-storeMessage.clearErrorMessages()
-storeMessage.clearSuccessMessages()
-
-// 加入購物車api
-
-const addToShopcar = async (productId) => {
-
-  window.scrollTo({ top: 0, behavior: 'smooth' })
-  const token = tokenHelpers.putTokenToHeader()
-  const res = await axiosHelper.POST(`/api/v1/shopcars/${productId}`, undefined, token)
-  const { success, message } = res.data
-
-  // api失敗
-  if (!success) return storeMessage.setError(message)
-
-  // api成功
-  return storeMessage.setSuccess(message)
-
-}
+storeMessage.messageInitialization()
 
 // 顯示單一商品api
 onMounted(async () => {
-
   const productId = route.params.product_id
-  const res = await axiosHelper.GET(`/api/v1/products/${productId}`)
-  const { data, success, message } = res.data
-
-  // api失敗
-  if (!success) return storeMessage.setError(message)
-  // api成功
-  return storeProduct.product = data.product
+  await storeProduct.getProduct(productId)
 })
 
 // 前往商家頁面
@@ -95,12 +72,10 @@ const toSellerProfile = (seller_id) => {
   router.push(`/seller/${seller_id}`)
 }
 
-
 // 上一頁按鈕
 const goBack = () => {
   window.history.back()
 }
-
 
 </script>
 

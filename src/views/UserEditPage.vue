@@ -6,7 +6,7 @@
         <h3>編輯使用者資料</h3>
         <AlertComponent></AlertComponent>
       </div>
-      <form @submit.prevent="editUser" :class="formClass" novalidate>
+      <form @submit.prevent="putUser" :class="storeForm.formClass" novalidate>
 
         <FormComponent label-for="name" label-text="名稱" span-text="※注意請填寫1-20字名稱" input-placeholder="請輸入使用者名稱"
           input-type="text" min-length="1" max-length="20" inputRequired="true" invalid-text="此項目為必填，字數限制1-20字"
@@ -31,7 +31,7 @@
         </FormComponent>
 
         <div>
-          <ButtonComponent msg="更新" backgroundColor="background-color:#FFBD9D" type="submit" @click="addFormClass">
+          <ButtonComponent msg="更新" backgroundColor="background-color:#FFBD9D" type="submit" @click="storeForm.addFormClass()">
           </ButtonComponent>
         </div>
       </form>
@@ -41,9 +41,8 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
-import axiosHelper from '../../helpers/axios-helper'
-import tokenHelpers from '../../helpers/token-helpers'
+
+import { onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useMessageStore } from '../stores/message'
 import { useFormStore } from '../stores/form-store'
@@ -53,6 +52,7 @@ import FormComponent from '../components/FormComponent.vue'
 import AlertComponent from '../components/AlertComponent.vue'
 import HeaderComponent from '../components/HeaderComponent.vue'
 import FooterComponent from '../components/FooterComponent.vue'
+
 const router = useRouter()
 const storeMessage = useMessageStore()
 const storeForm = useFormStore()
@@ -67,82 +67,44 @@ const storeLogin = useLoginStore()
 }
 
 // message初始化
-storeMessage.clearErrorMessages()
-storeMessage.clearSuccessMessages()
-
-// 表單樣式
-const formClass = ref('')
-
-const addFormClass = () => {
-  window.scrollTo({ top: 0, behavior: 'smooth' })
-  formClass.value = 'was-validated'
-}
+storeMessage.messageInitialization()
 
 // 檢查是否登入過，未登入會被導向首頁
 onMounted(() => {
-  if (storeLogin.user.role !== 'seller' && storeLogin.user.role !== 'buyer') {
-    router.push('/')
-  }
+  if (!storeLogin.isUser) return router.push('/')
+
+  // 表單樣式重置
+  storeForm.formClass = ''
 })
 
 // 顯示單一使用者api
 onMounted(async () => {
-
-  const token = tokenHelpers.putTokenToHeader()
-  const res = await axiosHelper.GET('/api/v1/users', undefined, token)
-  const { data, success, message } = res.data
-
-  // api失敗
-  if (!success) return storeMessage.setError(message)
-
-  // api成功
-  storeForm.name = data.user.name
-  storeForm.account = data.user.account
-  storeForm.email = data.user.email
-  storeForm.phone = data.user.phone
-  storeForm.avatar = data.user.avatar
-
-
+  storeForm.name = storeLogin.user.name
+  storeForm.account = storeLogin.user.account
+  storeForm.email = storeLogin.user.email
+  storeForm.phone = storeLogin.user.phone
+  storeForm.avatar = storeLogin.user.avatar
 })
 
-
-const onFileChange = (event) => {
-  // 获取选择的文件
-  const selectedFile = event.target.files[0]
-  storeForm.avatar = selectedFile
-}
-
 // 編輯使用者api
-
-const editUser = async (e) => {
-
+const putUser = async (e) => {
   const form = e.target
 
   // 表單驗證不過
   if (!form.checkValidity()) return e.preventDefault()
 
-  const token = tokenHelpers.putTokenToHeader()
-
-  const res = await axiosHelper.formDataPUT('/api/v1/users', {
-    name: storeForm.name,
-    account: storeForm.account,
-    email: storeForm.email,
-    phone: storeForm.phone,
-    avatar: storeForm.avatar
-  }, token)
-  const { success, message } = res.data
-
-  // api失敗
-  if (!success) {
-    return storeMessage.setError(message)
-  }
-  // api成功
-  storeMessage.setSuccess(message)
+  const putUser = await storeLogin.putUser()
+  if (putUser) return
 
   router.push('/user/profile')
 }
 
 
+// 獲取選擇的文件
+const onFileChange = (event) => {
+  const selectedFile = event.target.files[0]
+  storeForm.avatar = selectedFile
+}
 
 </script>
 

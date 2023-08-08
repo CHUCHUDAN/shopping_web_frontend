@@ -19,6 +19,15 @@ export const useMessageStore = defineStore('message', {
     },
     clearSuccessMessages() {
       this.successMessage = ''
+    },
+
+    // 訊息初始化
+    messageInitialization(message = []) {
+      const result = message.some(m => this.successMessage === m)
+
+      if (result) return this.clearErrorMessages()
+      this.clearErrorMessages()
+      this.clearSuccessMessages()
     }
   }
 })

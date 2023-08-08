@@ -3,15 +3,18 @@
     <label class="form-label" :for="labelFor">{{ labelText }}</label>
     <span class="form-text">{{ spanText }}</span>
     <input class="form-input" :type="inputType" :id="labelFor" :name="labelFor" :placeholder="inputPlaceholder"
-      :minlength="minLength" :maxlength="maxLength" :pattern="inputPattern" :required="JSON.parse(inputRequired)"  :value="value" @input="inputSend" >
+      :minlength="minLength" :maxlength="maxLength" :pattern="inputPattern" :required="JSON.parse(inputRequired)"
+      :value="value" @input="inputSend">
     <div class="invalid-text">{{ invalidText }}</div>
     <div class="valid-text">{{ '&#10003;' }}</div>
   </div>
 </template>
 
 <script setup>
+
 import { defineProps } from 'vue'
 import { useFormStore } from '../stores/form-store'
+
 const storeForm = useFormStore()
 
 defineProps({
@@ -54,12 +57,12 @@ defineProps({
   value: {}
 })
 
+// 更新input資料
 const inputSend = (e) => {
   const value = e.target.value
   const propName = e.target.id
   storeForm.setChangeInput(propName, value)
 }
-
 
 </script>
 
