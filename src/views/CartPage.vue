@@ -1,17 +1,19 @@
 <template>
   <HeaderComponent></HeaderComponent>
-  <div class="store-wrapper">
+  <div class="shopcar-wrapper">
     <AlertComponent>
     </AlertComponent>
-    <div class="add-wrapper">
-      <div class="add-button">
-        <router-link  to="/addStore">
-          <ButtonComponent msg="上架商品" backgroundColor="background-color:#FFBD9D" ></ButtonComponent>
-        </router-link>
+    <div class="checkout-wrapper">
+      <div class="total-amount">總金額:  {{ storeCart.totalAmount }}</div>
+      <div class="checkout-button">
+        <ButtonComponent msg="結帳" backgroundColor="background-color:#FFBD9D" @click="storeCart.checkoutCarts()"></ButtonComponent>
+      </div>
+      <div class="updated-button">
+        <ButtonComponent msg="更新" backgroundColor="background-color:#FFBD9D" @click="storeCart.updatedCarts()"></ButtonComponent>
       </div>
     </div>
     <div class="products-wrapper" >
-      <StoreProduct></StoreProduct>
+      <CartProduct></CartProduct>
     </div>
   </div>
   <FooterComponent></FooterComponent>
@@ -20,47 +22,41 @@
 <script setup>
 
 import { onMounted } from 'vue'
+import { useRouter } from 'vue-router'
 import { useMessageStore } from '../stores/message'
-import { useStore } from '../stores/store-product'
+import { useCartStore } from '../stores/cart-product'
 import { useLoginStore } from '../stores/login'
 import AlertComponent from '../components/AlertComponent.vue'
 import HeaderComponent from '../components/HeaderComponent.vue'
 import FooterComponent from '../components/FooterComponent.vue'
-import StoreProduct from '../components/StoreProduct.vue'
 import ButtonComponent from '../components/ButtonComponent.vue'
-import router from '../router'
+import CartProduct from '../components/CartProduct.vue'
 
+const router = useRouter()
 const storeMessage = useMessageStore()
-const storeStore = useStore()
+const storeCart = useCartStore()
 const storeLogin = useLoginStore()
 
 {
   AlertComponent
   HeaderComponent
+  CartProduct
   FooterComponent
-  StoreProduct
   ButtonComponent
 }
 
 // message初始化
-const message = ['商品上架成功', '商品編輯成功']
-storeMessage.messageInitialization(message)
+storeMessage.messageInitialization()
 
-// 檢查是否為seller
+// 檢查是否為buyer
 onMounted(() => {
-  if (storeLogin.user.role !== 'seller') return router.push('/')
-})
-
-// 取得本帳號商家所有商品api
-onMounted(async () => {
-  await storeStore.getSelfProducts()
+  if (storeLogin.user.role !== 'buyer') return router.push('/')
 })
 
 </script>
 
 <style scoped>
-
-.add-wrapper {
+.checkout-wrapper {
   display: flex;
   justify-content: flex-end;
   width: 800px;
@@ -69,10 +65,19 @@ onMounted(async () => {
   padding: 20px;
 }
 
-.add-button {
+.total-amount {
+  padding-right: 20px;
+  font-size: 25px;
+}
+
+.checkout-button {
   padding-right: 20px;
 }
 
+.updated-button {
+  font-weight: 700;
+  color: white;
+}
 
 .products-wrapper {
   display: grid;

@@ -6,7 +6,7 @@
         <h3>修改密碼</h3>
         <AlertComponent></AlertComponent>
       </div>
-      <form @submit.prevent="editUserPassword" :class="formClass" novalidate>
+      <form @submit.prevent="putUserPassword" :class="storeForm.formClass" novalidate>
 
         <FormComponent label-for="passwordOld" label-text="舊密碼" span-text="※注意請填寫4-50字密碼" input-placeholder="請輸入舊密碼"
           input-type="password" min-length="4" max-length="50" inputRequired="true" invalid-text='此項目為必填，字數限制4-50'>
@@ -21,7 +21,7 @@
           invalid-text='此項目為必填，字數限制4-50'>
         </FormComponent>
         <div>
-          <ButtonComponent msg="更新" backgroundColor="background-color:#FFBD9D" type="submit" @click="addFormClass">
+          <ButtonComponent msg="更新" backgroundColor="background-color:#FFBD9D" type="submit" @click="storeForm.addFormClass()">
           </ButtonComponent>
         </div>
       </form>
@@ -31,9 +31,8 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
-import axiosHelper from '../../helpers/axios-helper'
-import tokenHelpers from '../../helpers/token-helpers'
+
+import { onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useMessageStore } from '../stores/message'
 import { useFormStore } from '../stores/form-store'
@@ -43,6 +42,7 @@ import FormComponent from '../components/FormComponent.vue'
 import AlertComponent from '../components/AlertComponent.vue'
 import HeaderComponent from '../components/HeaderComponent.vue'
 import FooterComponent from '../components/FooterComponent.vue'
+
 const router = useRouter()
 const storeMessage = useMessageStore()
 const storeForm = useFormStore()
@@ -57,53 +57,28 @@ const storeLogin = useLoginStore()
 }
 
 // message初始化
-storeMessage.clearErrorMessages()
-storeMessage.clearSuccessMessages()
-
-// 表單樣式
-const formClass = ref('')
-
-const addFormClass = () => {
-  window.scrollTo({ top: 0, behavior: 'smooth' })
-  formClass.value = 'was-validated'
-}
+storeMessage.messageInitialization()
 
 // 檢查是否登入過，未登入會被導向首頁
 onMounted(() => {
-  if (storeLogin.user.role !== 'seller' && storeLogin.user.role !== 'buyer') {
-    router.push('/')
-  }
+  if (!storeLogin.isUser) return router.push('/')
+
+  // 表單樣式重置
+  storeForm.formClass = ''
 })
 
 // 修改使用者密碼api
-
-const editUserPassword = async (e) => {
-
+const putUserPassword = async (e) => {
   const form = e.target
 
   // 表單驗證不過
   if (!form.checkValidity()) return e.preventDefault()
 
-  const token = tokenHelpers.putTokenToHeader()
-
-  const res = await axiosHelper.PUT('/api/v1/users/password', {
-    passwordOld: storeForm.passwordOld,
-    password: storeForm.password,
-    passwordCheck: storeForm.passwordCheck
-  }, token)
-  const { success, message } = res.data
-
-  // api失敗
-  if (!success) {
-    return storeMessage.setError(message)
-  }
-  // api成功
-  storeMessage.setSuccess(message)
+  const putUserPassword = await storeLogin.putUserPassword()
+  if (putUserPassword) return
 
   router.push('/user/profile')
 }
-
-
 
 </script>
 

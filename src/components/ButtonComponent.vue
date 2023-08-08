@@ -3,8 +3,8 @@
 </template>
 
 <script setup>
-import { defineProps } from 'vue'
 
+import { defineProps } from 'vue'
 
 defineProps({
   msg: {
@@ -14,12 +14,8 @@ defineProps({
   backgroundColor: {
     type: String,
     required: true
-  },
-  link: {
-    type: String
   }
 })
-
 
 </script>
 

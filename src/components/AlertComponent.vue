@@ -14,7 +14,9 @@
 </template>
 
 <script setup>
+
 import { useMessageStore } from '../stores/message'
+
 const storeMessage = useMessageStore()
 
 </script>

@@ -1,10 +1,10 @@
 <template>
-  <div class="product-wrapper" v-for="(item) in storeProduct.products" v-bind:key="item.id">
+  <div class="product-wrapper" v-for="(item) in storeStore.products" v-bind:key="item.id">
     <div class="data-wrapper">
       <div class="product-pic" :style="`background-image: url('${item.avatar}')`" @click="toDetailProduct(item.id)"></div>
       <div class="product-data">
         <div class="product-price">售價: $ {{ item.price }}</div>
-        <div class="product-num">存貨量: {{ item.inventory_quantity }}</div>
+        <div class="product-num">存貨量: {{ item.stock }}</div>
       </div>
     </div>
     <div class="userData-wrapper">
@@ -13,7 +13,7 @@
       <div class="product-description">商品分類: {{ item.Category?.name }}</div>
       <div class="delete-button">
         <i v-if="storeLogin.isSelfUser" class="fa-solid fa-trash delete" product-id="item.product_id"
-          @click="deleteShop(item.id)"></i>
+          @click="storeStore.deleteStore(item.id)"></i>
         <i v-if="storeLogin.isSelfUser" class="fa-solid fa-pen edit" @click="toEditProduct(item.id)"></i>
         <span class="add-time">上架時間: {{ item.addShopTime }}</span>
       </div>
@@ -22,36 +22,13 @@
 </template>
 
 <script setup>
-import tokenHelpers from '../../helpers/token-helpers'
-import { productStore } from '../stores/product'
-import { useMessageStore } from '../stores/message'
+
 import { useLoginStore } from '../stores/login'
-import axiosHelper from '../../helpers/axios-helper'
-import ButtonComponent from './ButtonComponent.vue'
+import { useStore } from '../stores/store-product'
 import router from '../router'
-const storeProduct = productStore()
-const storeMessage = useMessageStore()
+
 const storeLogin = useLoginStore()
-
-{
-  ButtonComponent
-}
-
-
-// 刪除商店商品api
-const deleteShop = async (productId) => {
-
-  const token = tokenHelpers.putTokenToHeader()
-  const res = await axiosHelper.DELETE(`/api/v1/stores/${productId}`, undefined, token)
-  const { success, message } = res.data
-
-  // api失敗
-  if (!success) return storeMessage.setError(message)
-
-  // api成功
-  storeProduct.deleteStoreShop(productId)
-  return storeMessage.setSuccess(message)
-}
+const storeStore = useStore()
 
 // 跳轉至商品詳細頁
 const toDetailProduct = (product_id) => {

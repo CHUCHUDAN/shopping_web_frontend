@@ -7,44 +7,27 @@
     </div>
     <div class="product-price">
       <div class="price"> $ {{ item.price }}</div>
-      <ButtonComponent v-if="storeLogin.buttonOn" msg="加入購物車" backgroundColor="background-color:#FF9797"
-        @click="addToShopcar(item.id)">
+      <ButtonComponent v-if="storeLogin.cartButtonOn" msg="加入購物車" backgroundColor="background-color:#FF9797"
+        @click="storeCart.postCart(item.id)">
       </ButtonComponent>
     </div>
   </div>
 </template>
 
 <script setup>
+
 import { useLoginStore } from '../stores/login'
-import { productStore } from '../stores/product'
-import { useMessageStore } from '../stores/message'
-import axiosHelper from '../../helpers/axios-helper'
-import tokenHelpers from '../../helpers/token-helpers'
+import { useProductStore } from '../stores/product'
+import { useCartStore } from '../stores/cart-product'
 import ButtonComponent from './ButtonComponent.vue'
 import router from '../router'
+
 const storeLogin = useLoginStore()
-const storeProduct = productStore()
-const storeMessage = useMessageStore()
+const storeProduct = useProductStore()
+const storeCart = useCartStore()
+
 {
   ButtonComponent
-}
-
-
-// 加入購物車api
-
-const addToShopcar = async (productId) => {
-
-  window.scrollTo({ top: 0, behavior: 'smooth' })
-  const token = tokenHelpers.putTokenToHeader()
-  const res = await axiosHelper.POST(`/api/v1/shopcars/${productId}`, undefined, token)
-  const { success, message } = res.data
-
-  // api失敗
-  if (!success) return storeMessage.setError(message)
-
-  // api成功
-  return storeMessage.setSuccess(message)
-
 }
 
 // 跳轉至商品詳細頁

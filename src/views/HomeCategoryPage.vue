@@ -4,7 +4,7 @@
     <AlertComponent></AlertComponent>
     <div class="category-wrapper">
       <router-link to="/home" class="link-to-home" v-for="(item) in storeProduct.categories" v-bind:key="item.id"
-        @click="storePage.categorySet(item.id)">
+        @click="storeProduct.categorySet(item.id)">
         <div class="category-item">
           <div class="category-img"
             :style="`background-image: url('${item.avatar}')`">
@@ -15,7 +15,7 @@
     </div>
     <router-link to="/home">
       <ButtonComponent class="all-product-button" msg="逛全部商品" backgroundColor="background-color:	#FFAD86" type="button"
-        @click="storePage.categorySet('')">
+        @click="storeProduct.categorySet('')">
       </ButtonComponent>
     </router-link>
   </div>
@@ -23,51 +23,33 @@
 </template>
 
 <script setup>
+
 import { onMounted } from 'vue'
 import { useMessageStore } from '../stores/message'
-import { usePageStore } from '../stores/page'
-import { productStore } from '../stores/product'
-import axiosHelper from '../../helpers/axios-helper'
+import { useProductStore } from '../stores/product'
 import AlertComponent from '../components/AlertComponent.vue'
-import ProductComponent from '../components/ProductComponent.vue'
-import FormComponent from '../components/FormComponent.vue'
 import ButtonComponent from '../components/ButtonComponent.vue'
 import HeaderComponent from '../components/HeaderComponent.vue'
 import FooterComponent from '../components/FooterComponent.vue'
-import PaginationComponent from '../components/PaginationComponent.vue'
+
 const storeMessage = useMessageStore()
-const storePage = usePageStore()
-const storeProduct = productStore()
+const storeProduct = useProductStore()
 
 {
   AlertComponent
-  ProductComponent
-  FormComponent
   ButtonComponent
   HeaderComponent
   FooterComponent
-  PaginationComponent
 }
 
-
 // message初始化
-storeMessage.clearErrorMessages()
+const message = ['登入成功']
+storeMessage.messageInitialization(message)
 
-// 取出所有商品 api
-storePage.getProducts(1)
-
-// 顯示單一商品api
+// 取得分類資料
 onMounted(async () => {
-
-  const res = await axiosHelper.GET('/api/v1/products/categories')
-  const { data, success, message } = res.data
-
-  // api失敗
-  if (!success) return storeMessage.setError(message)
-  // api成功
-  return storeProduct.categories = data.categories
+  await storeProduct.getCategories()
 })
-
 
 </script>
 

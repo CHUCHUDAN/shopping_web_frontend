@@ -48,9 +48,9 @@ const router = createRouter({
     },
     // 購物車頁面
     {
-      path: '/shopcars',
-      name: 'shopcar',
-      component: () => import('../views/ShopcarPage.vue')
+      path: '/carts',
+      name: 'cart',
+      component: () => import('../views/CartPage.vue')
     },
     // 商家頁面
     {

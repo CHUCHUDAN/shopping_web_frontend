@@ -35,9 +35,9 @@
 </template>
 
 <script setup>
+
 import { onMounted } from 'vue'
 import AlertComponent from '../components/AlertComponent.vue'
-import ButtonComponent from '../components/ButtonComponent.vue'
 import HeaderComponent from '../components/HeaderComponent.vue'
 import FooterComponent from '../components/FooterComponent.vue'
 import { useMessageStore } from '../stores/message'
@@ -48,26 +48,23 @@ const storeLogin = useLoginStore()
 
 {
   AlertComponent
-  ButtonComponent
   HeaderComponent
   FooterComponent
 }
 
 // message初始化
-storeMessage.clearErrorMessages()
+const message = ['個人資料修改成功', '密碼修改成功']
+storeMessage.messageInitialization(message)
 
 // 檢查是否登入過，未登入會被導向首頁
 onMounted(() => {
-  if (storeLogin.user.role !== 'seller' && storeLogin.user.role !== 'buyer') {
-    router.push('/')
-  }
+  if (!storeLogin.isUser) return router.push('/')
 })
 
 // 上一頁按鈕
 const goBack = () => {
   window.history.back()
 }
-
 
 </script>
 
