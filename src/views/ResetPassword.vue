@@ -3,29 +3,21 @@
   <div class="wrapper">
     <div class="form-wrapper">
       <div class="form-title">
-        <h3>Login</h3>
+        <h3>Reset Password</h3>
         <AlertComponent></AlertComponent>
       </div>
-      <form @submit.prevent="login" :class="storeForm.formClass" novalidate>
-        <FormComponent label-for="account" label-text="帳號" span-text="※注意請填寫3-50字的帳號" input-placeholder="請輸入帳號"
-          input-type="text" min-length="3" max-length="50" inputRequired="true" invalid-text="此項目為必填，字數限制3-50">
+      <div class="email-text">
+        您的重置帳號信箱: <span>{{ storeForm.email }}</span>
+      </div>
+      <form @submit.prevent="resetPassword" :class="storeForm.formClass" novalidate>
+        <FormComponent label-for="password" label-text="新密碼" span-text="※注意請填寫4-50字密碼" input-placeholder="請輸入新密碼"
+          input-type="password" min-length="4" max-length="50" inputRequired="true" invalid-text='此項目為必填，字數限制4-50'
+          :value="storeForm.password">
         </FormComponent>
-
-        <FormComponent label-for="password" label-text="密碼" span-text="※注意請填寫4-50長度的密碼" input-placeholder="請輸入有效密碼"
-          input-type="password" min-length="4" max-length="50" inputRequired="true" invalid-text='此項目為必填，字數限制4-50'>
-        </FormComponent>
-
         <div>
-          <ButtonComponent msg="login" backgroundColor="background-color:#FFBD9D" type="submit"
+          <ButtonComponent msg="next" backgroundColor="background-color:#FFBD9D" type="submit"
             @click="storeForm.addFormClass()">
           </ButtonComponent>
-        </div>
-        <div class="login-text">
-          <div class="register">
-            還沒有帳號 ?
-            <router-link to="/user/register" class="login-text-link">註冊</router-link>
-          </div>
-          <router-link to="/user/mailToReset" class="login-text-link forget">忘記密碼</router-link>
         </div>
       </form>
     </div>
@@ -40,6 +32,7 @@ import { useRouter } from 'vue-router'
 import { useMessageStore } from '../stores/message'
 import { useFormStore } from '../stores/form-store'
 import { useLoginStore } from '../stores/login'
+import { useRoute } from 'vue-router'
 import ButtonComponent from '../components/ButtonComponent.vue'
 import FormComponent from '../components/FormComponent.vue'
 import AlertComponent from '../components/AlertComponent.vue'
@@ -50,6 +43,7 @@ const router = useRouter()
 const storeMessage = useMessageStore()
 const storeForm = useFormStore()
 const storeLogin = useLoginStore()
+const route = useRoute()
 
 {
   ButtonComponent
@@ -60,8 +54,7 @@ const storeLogin = useLoginStore()
 }
 
 // message初始化
-const message = ['登出成功', '註冊成功', '驗證信成功寄出', '密碼修改成功']
-storeMessage.messageInitialization(message)
+storeMessage.messageInitialization()
 
 // 登入狀態下會被導回首頁
 
@@ -70,18 +63,27 @@ onMounted(() => {
 
   // 表單樣式重置
   storeForm.formClass = ''
+
+  // email && password重置
+  storeForm.email = ''
+  storeForm.password = ''
+
+  // 取出使用者email
+  const email = route.query.email
+  storeForm.email = email
 })
 
-// 登入功能
-const login = async (e) => {
+// 忘記密碼 && 重置密碼功能
+const resetPassword = async (e) => {
+  const resetToken = route.query.token
   const form = e.target
   // 表單驗證不過
   if (!form.checkValidity()) return e.preventDefault()
 
-  // 登入函式
-  const loginResult = await storeLogin.login()
-  if (loginResult) return
-  router.push('/')
+  // 重置密碼函式
+  const resetPasswordResult = await storeLogin.resetPassword(resetToken)
+  if (resetPasswordResult) return
+  router.push('/user/login')
 }
 
 </script>
@@ -93,6 +95,10 @@ const login = async (e) => {
   height: auto;
   border-radius: 40px;
   padding: 50px;
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: repeat(auto, 4);
+  grid-gap: 30px;
   /* 陰影 */
   -webkit-box-shadow: 2px 6px 27px 6px rgba(0, 0, 0, 0.1);
   -moz-box-shadow: 2px 6px 27px 6px rgba(0, 0, 0, 0.1);
@@ -102,35 +108,39 @@ const login = async (e) => {
 .form-title {
   text-align: center;
   color: brown;
-  margin-bottom: 10px;
+}
+.email-text {
+  text-align: center;
+  color: #5B5B5B;
+}
+.email-text > span {
+  color: brown;
 }
 
 form {
   display: grid;
   grid-template-columns: 1fr;
-  grid-template-rows: repeat(2, 100px) 1fr;
+  grid-template-rows: auto auto;
   grid-gap: 20px;
 }
 
-.login-text {
-  display: grid;
-  grid-gap: 5px;
-}
-
-.login-text-link {
-  text-decoration: none;
-}
-
-.register {
+.button-wrapper {
   display: grid;
   grid-template-columns: auto auto;
-  align-items: center;
-  justify-content: flex-start;
+  grid-template-rows: 50px;
   grid-gap: 10px;
+  justify-content: flex-start;
+  align-items: center;
 }
 
-.forget {
-  font-size: 15px;
+.back {
+  font-size: 35px;
+  color: #ADADAD;
+  cursor: pointer;
+  margin-left: 10px;
 }
 
+.back:hover {
+  color: black;
+}
 </style>

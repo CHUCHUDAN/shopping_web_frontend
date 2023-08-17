@@ -23,12 +23,10 @@ defineProps({
     required: true
   },
   labelText: {
-    type: String,
-    required: true
+    type: String
   },
   spanText: {
-    type: String,
-    required: true
+    type: String
   },
   inputPlaceholder: {
     type: String,

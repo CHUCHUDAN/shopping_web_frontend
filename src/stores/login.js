@@ -40,7 +40,7 @@ export const useLoginStore = defineStore('login', {
       storeMessage.setSuccess('登入成功')
     },
 
-    // 狀態檢查權限
+    // 狀態檢查權限api
     async authority() {
       // 將token放進header中發送驗證
       const token = tokenHelpers.putTokenToHeader()
@@ -132,6 +132,40 @@ export const useLoginStore = defineStore('login', {
       // api成功
       storeMessage.setSuccess(message)
 
+    },
+
+    // 忘記密碼 && 寄送驗證信功能api
+    async mailToReset() {
+      const res = await axiosHelper.POST('/api/v1/users/forgetPassword', {
+        email: storeForm.email
+      })
+      const { success, message } = res.data
+
+      // api失敗
+      if (!success) {
+        storeMessage.setError(message)
+        return 'err'
+      }
+      // api成功
+      storeMessage.setSuccess(message)
+    },
+
+    // 忘記密碼 && 重置密碼功能api
+    async resetPassword(resetToken) {
+      const res = await axiosHelper.POST('/api/v1/users/resetPassword', {
+        email: storeForm.email,
+        resetToken: resetToken,
+        password: storeForm.password
+      })
+      const { success, message } = res.data
+
+      // api失敗
+      if (!success) {
+        storeMessage.setError(message)
+        return 'err'
+      }
+      // api成功
+      storeMessage.setSuccess(message)
     },
 
     // loginStore資料設定

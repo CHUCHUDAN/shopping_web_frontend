@@ -22,6 +22,19 @@ const router = createRouter({
       name: 'register',
       component: () => import('../views/RegisterPage.vue')
     },
+    // 忘記密碼 && 寄送驗證信頁面
+    {
+      path: '/user/mailToReset',
+      name: 'mailToReset',
+      component: () => import('../views/MailToReset.vue')
+    },
+    // 忘記密碼 && 重置密碼頁面
+    {
+      path: '/user/resetPassword',
+      name: 'resetPassword',
+      component: () => import('../views/ResetPassword.vue')
+    },
+
     // 使用者頁面
     {
       path: '/user/profile',

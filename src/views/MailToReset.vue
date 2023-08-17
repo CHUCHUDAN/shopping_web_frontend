@@ -3,29 +3,19 @@
   <div class="wrapper">
     <div class="form-wrapper">
       <div class="form-title">
-        <h3>Login</h3>
+        <h3>Reset Password</h3>
         <AlertComponent></AlertComponent>
       </div>
-      <form @submit.prevent="login" :class="storeForm.formClass" novalidate>
-        <FormComponent label-for="account" label-text="帳號" span-text="※注意請填寫3-50字的帳號" input-placeholder="請輸入帳號"
-          input-type="text" min-length="3" max-length="50" inputRequired="true" invalid-text="此項目為必填，字數限制3-50">
+      <form @submit.prevent="mailToReset" :class="storeForm.formClass" novalidate>
+        <FormComponent label-for="email" label-text="信箱" span-text="※注意信箱為必填，請輸入3-50字信箱" input-placeholder="請輸入有效信箱"
+          input-type="email" min-length="3" max-length="50" inputRequired="true" invalid-text='此項目為必填，請輸入正確信箱格式'
+          :value="storeForm.email">
         </FormComponent>
-
-        <FormComponent label-for="password" label-text="密碼" span-text="※注意請填寫4-50長度的密碼" input-placeholder="請輸入有效密碼"
-          input-type="password" min-length="4" max-length="50" inputRequired="true" invalid-text='此項目為必填，字數限制4-50'>
-        </FormComponent>
-
-        <div>
-          <ButtonComponent msg="login" backgroundColor="background-color:#FFBD9D" type="submit"
+        <div class="button-wrapper">
+          <i class="fa-solid fa-circle-arrow-left back" @click="goBack()"></i>
+          <ButtonComponent msg="next" backgroundColor="background-color:#FFBD9D" type="submit"
             @click="storeForm.addFormClass()">
           </ButtonComponent>
-        </div>
-        <div class="login-text">
-          <div class="register">
-            還沒有帳號 ?
-            <router-link to="/user/register" class="login-text-link">註冊</router-link>
-          </div>
-          <router-link to="/user/mailToReset" class="login-text-link forget">忘記密碼</router-link>
         </div>
       </form>
     </div>
@@ -60,8 +50,7 @@ const storeLogin = useLoginStore()
 }
 
 // message初始化
-const message = ['登出成功', '註冊成功', '驗證信成功寄出', '密碼修改成功']
-storeMessage.messageInitialization(message)
+storeMessage.messageInitialization()
 
 // 登入狀態下會被導回首頁
 
@@ -70,18 +59,26 @@ onMounted(() => {
 
   // 表單樣式重置
   storeForm.formClass = ''
+
+  // email 重置
+  storeForm.email = ''
 })
 
-// 登入功能
-const login = async (e) => {
+// 忘記密碼 && 寄送驗證信
+const mailToReset = async (e) => {
   const form = e.target
   // 表單驗證不過
   if (!form.checkValidity()) return e.preventDefault()
 
-  // 登入函式
-  const loginResult = await storeLogin.login()
-  if (loginResult) return
-  router.push('/')
+  // 寄送驗證信函式
+  const mailResult = await storeLogin.mailToReset()
+  if (mailResult) return
+  router.push('/user/login')
+}
+
+// 上一頁按鈕
+const goBack = () => {
+  window.history.back()
 }
 
 </script>
@@ -102,35 +99,33 @@ const login = async (e) => {
 .form-title {
   text-align: center;
   color: brown;
-  margin-bottom: 10px;
+  margin-bottom: 30px;
 }
 
 form {
   display: grid;
   grid-template-columns: 1fr;
-  grid-template-rows: repeat(2, 100px) 1fr;
+  grid-template-rows: auto auto;
   grid-gap: 20px;
 }
 
-.login-text {
-  display: grid;
-  grid-gap: 5px;
-}
-
-.login-text-link {
-  text-decoration: none;
-}
-
-.register {
+.button-wrapper {
   display: grid;
   grid-template-columns: auto auto;
-  align-items: center;
-  justify-content: flex-start;
+  grid-template-rows: 50px;
   grid-gap: 10px;
+  justify-content: flex-start;
+  align-items: center;
 }
 
-.forget {
-  font-size: 15px;
+.back {
+  font-size: 35px;
+  color: #ADADAD;
+  cursor: pointer;
+  margin-left: 10px;
 }
 
+.back:hover {
+  color: black;
+}
 </style>
