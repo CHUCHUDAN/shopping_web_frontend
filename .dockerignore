@@ -1,0 +1,10 @@
+node_modules
+Dockerfile
+dist
+.dockerignore
+.git
+.gitignore
+.gitattributes
+.eslintrc.cjs
+.env
+docker-compose*
